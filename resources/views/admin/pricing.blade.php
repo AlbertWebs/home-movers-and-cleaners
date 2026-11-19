@@ -5,14 +5,21 @@
 @include('partials.errors')
 <div class="admin-price-list">
     @foreach($services as $service)
-        <section class="admin-panel">
-            <h2>{{ $service->name }}</h2>
-            @foreach($service->packages as $package)
-                <details><summary>{{ $package->name }} · {{ $package->priceLabel() }}</summary>
+        <section class="admin-panel admin-price-service">
+            <header class="admin-price-service-heading">
+                <div><h2>{{ $service->name }}</h2><p>{{ $service->summary }}</p></div>
+                <span class="admin-price-package-count">{{ $service->packages->count() }} packages</span>
+            </header>
+            <div class="admin-price-packages">
+                @foreach($service->packages as $package)
+                <details class="admin-price-package">
+                    <summary><span>{{ $package->name }}</span><strong>{{ $package->priceLabel() }}</strong></summary>
                     @include('admin.price-form', ['item' => $package])
                 </details>
-            @endforeach
-            <details><summary>Add a package</summary>
+                @endforeach
+            </div>
+            <details class="admin-price-package admin-price-package-add">
+                <summary><span>Add a package</span><strong aria-hidden="true">+</strong></summary>
                 @include('admin.price-form', ['item' => new \App\Models\PricePackage])
             </details>
         </section>

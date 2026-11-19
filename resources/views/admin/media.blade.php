@@ -3,14 +3,12 @@
 @section('content')
 <div class="admin-welcome"><div><div class="eyebrow">WEBSITE ASSETS</div><h1>Media library</h1><p>Upload, search, replace, and keep track of images used across the site.</p></div></div>
 <section class="admin-panel media-upload-panel">
-    <form method="post" action="{{ route('admin.media.store') }}" enctype="multipart/form-data" data-upload-progress-form>
+    <form class="settings-form media-library-upload-form" method="post" action="{{ route('admin.media.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="form-row">
             <label>Add images<input type="file" name="files[]" accept="image/jpeg,image/png,image/webp" multiple required><small>JPG, PNG, or WebP. Up to 20 images, 10 MB each. Images are resized and saved as WebP when the server supports it.</small></label>
             <label>Category<select name="category" required>@foreach(['moving' => 'Moving', 'fumigation' => 'Fumigation', 'upholstery' => 'Sofa and mattress', 'home' => 'Home cleaning', 'brand' => 'Brand', 'other' => 'Other'] as $value => $label)<option value="{{ $value }}">{{ $label }}</option>@endforeach</select></label>
         </div>
-        <progress data-upload-progress max="100" value="0" hidden></progress>
-        <p data-upload-status role="status" aria-live="polite"></p>
         <button class="button" type="submit">Upload to library <span aria-hidden="true">↗</span></button>
     </form>
 </section>
@@ -27,7 +25,7 @@
             @foreach($assets as $asset)
                 <article class="media-library-card">
                     <a href="{{ $asset->url() }}" target="_blank" rel="noopener"><img src="{{ $asset->url() }}" alt="{{ $asset->alt_text }}" loading="lazy"></a>
-                    <form method="post" action="{{ route('admin.media.update', $asset) }}" enctype="multipart/form-data" class="media-asset-form">
+                    <form method="post" action="{{ route('admin.media.update', $asset) }}" enctype="multipart/form-data" class="settings-form media-asset-form">
                         @csrf @method('PATCH')
                         <label>Title<input name="title" value="{{ $asset->title }}" maxlength="255" required></label>
                         <label>Alt text<input name="alt_text" value="{{ $asset->alt_text }}" maxlength="255" required></label>

@@ -87,7 +87,7 @@
             </a>
 
             <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle site navigation">
-                <span>Menu</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <span class="menu-toggle-label">Menu</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
             </button>
 
             <nav id="site-nav" class="main-nav" aria-label="Primary navigation">
@@ -162,6 +162,7 @@
             <span>© {{ date('Y') }} {{ $siteSettings['company_name'] ?? 'HOME MOVERS AND CLEANERS' }}. All Rights Reserved.</span>
             <div>@foreach($legalPages as $policy)<a href="{{ in_array($policy->slug, ['privacy', 'terms'], true) ? route($policy->slug) : route('content.show', $policy->slug) }}">{{ $policy->title }}</a>@endforeach<a href="{{ route('sitemap') }}">Sitemap</a>@if(($siteSettings['ga4_measurement_id'] ?? null) || ($siteSettings['gtm_container_id'] ?? null))<button class="footer-cookie-settings" type="button" data-analytics-open>Cookie settings</button>@endif</div>
         </div>
+        <div class="footer-credit">Powered by <a href="https://designekta.com" target="_blank" rel="noopener noreferrer">Designekta Studios</a></div>
     </footer>
     <a class="back-to-top" href="#page-top" aria-label="Back to top" hidden>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 11 6-6 6 6m-6-6v14"/></svg>

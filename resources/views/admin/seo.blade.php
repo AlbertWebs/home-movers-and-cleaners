@@ -9,10 +9,10 @@
     <article><span>Published articles</span><strong>{{ $publishedArticles }}</strong><small>Visible in the resource centre</small></article>
 </div>
 <div class="seo-admin-grid">
-    <section class="admin-panel">
+    <section class="admin-panel seo-redirect-create-panel">
         <h2>Create redirect</h2>
         <p>Use a local path such as <code>/old-page</code> or a complete HTTP/HTTPS destination. Redirect chains and self redirects should be avoided.</p>
-        <form class="settings-form" method="post" action="{{ route('admin.seo.redirects.store') }}">
+        <form class="settings-form seo-redirect-create-form" method="post" action="{{ route('admin.seo.redirects.store') }}">
             @csrf
             <label>Old path<input name="from_path" required placeholder="/old-page"></label>
             <label>Destination<input name="destination" required placeholder="/services/moving-services"></label>
@@ -20,10 +20,10 @@
             <button class="button" type="submit">Add redirect</button>
         </form>
     </section>
-    <section class="admin-panel">
+    <section class="admin-panel seo-redirect-manager-panel">
         <h2>Redirect manager</h2>
         @forelse($redirects as $redirect)
-            <form class="seo-redirect-row" method="post" action="{{ route('admin.seo.redirects.update', $redirect) }}">
+            <form class="settings-form seo-redirect-row" method="post" action="{{ route('admin.seo.redirects.update', $redirect) }}">
                 @csrf @method('PATCH')
                 <label>From<input name="from_path" required value="{{ $redirect->from_path }}"></label>
                 <label>To<input name="destination" required value="{{ $redirect->destination }}"></label>
@@ -33,7 +33,7 @@
                 @if($redirect->history)<details><summary>History ({{ count($redirect->history) }})</summary><ul>@foreach($redirect->history as $entry)<li>{{ $entry['changed_at'] ?? '' }}: {{ $entry['status_code'] ?? '' }} to {{ $entry['destination'] ?? '' }}</li>@endforeach</ul></details>@endif
             </form>
         @empty
-            <p>No redirects are configured yet.</p>
+            <div class="seo-redirect-empty"><strong>No redirects configured</strong><p>Add a redirect using the form when you need an old address to point to a new destination.</p></div>
         @endforelse
         {{ $redirects->links() }}
     </section>

@@ -17,7 +17,7 @@
     <div class="panel-head"><div><h2>Saved feedback</h2><p>Review the text and publication state.</p></div></div>
     @forelse($testimonials as $testimonial)
         <div class="testimonial-admin-card">
-        <form method="post" action="{{ route('admin.testimonials.update', $testimonial) }}">
+        <form class="settings-form testimonial-update-form" method="post" action="{{ route('admin.testimonials.update', $testimonial) }}">
             @csrf @method('PATCH')
             <div class="form-row"><label>Customer name<input name="customer_name" maxlength="120" required value="{{ $testimonial->customer_name }}"></label><label>Service, optional<input name="service" maxlength="120" value="{{ $testimonial->service }}"></label></div>
             @if($testimonial->consent_confirmed_at)<p class="consent-stamp">Permission confirmed {{ $testimonial->consent_confirmed_at->format('j M Y, H:i') }}.</p>@endif

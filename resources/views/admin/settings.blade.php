@@ -1,27 +1,37 @@
 @extends('admin.layout')
 @section('title', 'Settings')
 @section('content')
-<div class="admin-welcome"><div><div class="eyebrow">WEBSITE CONFIGURATION</div><h1>Business details</h1><p>Manage public contact information, homepage content, footer links and social channels.</p></div></div>
-<form class="admin-panel settings-form" method="post" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
+<div class="admin-welcome settings-page-heading"><div><div class="eyebrow">ADMIN / SETTINGS</div><h1>Settings</h1><p>Manage your business information, website content, and integrations.</p></div><button class="button settings-save-top" type="submit" form="admin-settings-form">Save changes</button></div>
+<nav class="settings-section-nav" aria-label="Settings sections">
+    <a href="#settings-company">General</a><a href="#settings-homepage">Homepage</a><a href="#settings-cta">Call to action</a><a href="#settings-footer">Footer and social</a><a href="#settings-brand">SEO and brand</a>
+</nav>
+<form id="admin-settings-form" class="admin-panel settings-form admin-settings-form" method="post" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     @include('partials.errors')
 
-    <div class="settings-section">
+    <div id="settings-company" class="settings-section settings-company-section">
         <h2>Company and contact</h2>
         <div class="form-row"><label>Company name<input name="company_name" required value="{{ old('company_name', $settings['company_name'] ?? '') }}"></label><label>Tagline<input name="tagline" value="{{ old('tagline', $settings['tagline'] ?? '') }}"></label></div>
         <div class="form-row"><label>Telephone<input name="phone" required value="{{ old('phone', $settings['phone'] ?? '') }}"></label><label>WhatsApp number<input name="whatsapp" required value="{{ old('whatsapp', $settings['whatsapp'] ?? '') }}"><small>Include country code, without + or spaces.</small></label></div>
         <div class="form-row"><label>Business email<input type="email" name="business_email" value="{{ old('business_email', $settings['business_email'] ?? '') }}"></label><label>Business location<input name="business_location" value="{{ old('business_location', $settings['business_location'] ?? '') }}"></label></div>
     </div>
 
-    <div class="settings-section">
+    <aside class="settings-quick-panel">
+        <h2>Quick tips</h2>
+        <p>Keep your business contact details current so customers can reach your team and search engines can show accurate local information.</p>
+        <div class="settings-location-card"><span>Business location</span><strong>{{ $settings['business_location'] ?? 'Add your service location' }}</strong></div>
+        <div class="settings-location-card"><span>Public phone</span><strong>{{ $settings['phone'] ?? 'Add your phone number' }}</strong></div>
+    </aside>
+
+    <div id="settings-homepage" class="settings-section">
         <h2>Homepage</h2>
         <label>Hero heading<input name="hero_heading" required value="{{ old('hero_heading', $settings['hero_heading'] ?? '') }}"></label>
         <label>Hero description<textarea name="hero_description" rows="3" required>{{ old('hero_description', $settings['hero_description'] ?? '') }}</textarea></label>
         <label>About preview<textarea name="about_preview" rows="3" required>{{ old('about_preview', $settings['about_preview'] ?? '') }}</textarea></label>
     </div>
 
-    <div class="settings-section">
+    <div id="settings-cta" class="settings-section">
         <h2>Fresh start call to action</h2>
         <label>Eyebrow<input name="cta_eyebrow" value="{{ old('cta_eyebrow', $settings['cta_eyebrow'] ?? 'A FRESH START CAN BE SIMPLE') }}"></label>
         <label>Heading<input name="cta_heading" value="{{ old('cta_heading', $settings['cta_heading'] ?? 'Ready to move or refresh your space?') }}"></label>
@@ -31,7 +41,7 @@
         <label>CTA image<input type="file" name="cta_image_file" accept="image/jpeg,image/png,image/webp"><small>Leave empty to keep the current image.</small></label>
     </div>
 
-    <div class="settings-section">
+    <div id="settings-footer" class="settings-section">
         <h2>Footer</h2>
         <label>Company description<textarea name="footer_description" rows="3">{{ old('footer_description', $settings['footer_description'] ?? 'Professional moving, fumigation, sofa and mattress cleaning, and house deep cleaning for homes and businesses.') }}</textarea></label>
         <label>Footer logo<input type="file" name="footer_logo_file" accept="image/jpeg,image/png,image/webp"><small>Leave empty to keep the current logo.</small></label>
@@ -43,14 +53,14 @@
         @endforeach
     </div>
 
-    <div class="settings-section">
+    <div class="settings-section settings-social-section">
         <h2>Social media</h2>
         <label>Facebook URL<input type="url" name="facebook" value="{{ old('facebook', $settings['facebook'] ?? '') }}"></label>
         <label>Instagram URL<input type="url" name="instagram" value="{{ old('instagram', $settings['instagram'] ?? '') }}"></label>
         <label>TikTok URL<input type="url" name="tiktok" value="{{ old('tiktok', $settings['tiktok'] ?? '') }}"></label>
         <label>YouTube URL<input type="url" name="youtube" value="{{ old('youtube', $settings['youtube'] ?? '') }}"></label>
     </div>
-    <div class="settings-section">
+    <div id="settings-brand" class="settings-section settings-brand-section">
         <h2>Brand and search</h2>
         <label>Operating hours<input name="operating_hours" value="{{ old('operating_hours', $settings['operating_hours'] ?? '') }}"></label>
         <label>Primary logo<input type="file" name="primary_logo_file" accept="image/jpeg,image/png,image/webp"></label>
@@ -82,6 +92,6 @@
             <p>Analytics loads only after a visitor chooses to allow analytics cookies. Verification and measurement IDs are public identifiers, not private credentials.</p>
         </details>
     </div>
-    <button class="button">Save settings <span>↗</span></button>
+    <div class="settings-submit-bar"><span>Changes will be saved and applied to your website.</span><button class="button" type="submit">Save changes</button></div>
 </form>
 @endsection

@@ -1,4 +1,9 @@
-@php($defaults = config('site_content.services.'.$item->slug, []))
+@php
+    $defaults = config('site_content.services.'.$item->slug, []);
+    $serviceContent = filled($item->content) ? $item->content : ($defaults['content'] ?? '');
+    $serviceBenefits = filled($item->benefits) ? $item->benefits : ($defaults['benefits'] ?? []);
+    $serviceFaqs = filled($item->faqs) ? $item->faqs : ($defaults['faqs'] ?? []);
+@endphp
 <form class="settings-form" method="post" action="{{ $item->exists ? route('admin.services.update', $item) : route('admin.services.store') }}" enctype="multipart/form-data" data-seo-editor data-seo-default-title="{{ $item->name ?: 'Service name' }} in Nairobi | Home Movers and Cleaners" data-seo-default-description="{{ $item->summary }}" data-seo-default-url="{{ $item->exists ? route('service', $item->slug) : route('services') }}">
     @csrf
     @if($item->exists) @method('PATCH') @endif
@@ -6,10 +11,13 @@
     @unless($item->exists)<label>URL name<input name="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*"></label>@endunless
     <label>Short description<textarea name="summary" required rows="2">{{ $item->summary }}</textarea></label>
     <label>Introduction<textarea name="description" rows="3">{{ $item->description }}</textarea></label>
-    @include('admin.markdown-field', ['editorId' => $item->id ?? 'new', 'fieldName' => 'content', 'fieldLabel' => 'Service details', 'fieldValue' => $item->content ?? $defaults['content'] ?? '', 'required' => false])
-    <label>Benefits, one per line<textarea name="benefits_text" rows="3">{{ implode(PHP_EOL, $item->benefits ?? $defaults['benefits'] ?? []) }}</textarea></label>
-    <label>FAQs, one per line. Separate the question and answer with |<textarea name="faqs_text" rows="4">{{ collect($item->faqs ?? $defaults['faqs'] ?? [])->map(fn ($faq) => $faq['question'].' | '.$faq['answer'])->implode(PHP_EOL) }}</textarea></label>
+    @include('admin.markdown-field', ['editorId' => $item->id ?? 'new', 'fieldName' => 'content', 'fieldLabel' => 'Service details', 'fieldValue' => old('content', $serviceContent), 'required' => false])
+    <label>Benefits, one per line<textarea name="benefits_text" rows="3">{{ old('benefits_text', implode(PHP_EOL, $serviceBenefits)) }}</textarea></label>
+    <label>FAQs, one per line. Separate the question and answer with |<textarea name="faqs_text" rows="4">{{ old('faqs_text', collect($serviceFaqs)->map(fn ($faq) => $faq['question'].' | '.$faq['answer'])->implode(PHP_EOL)) }}</textarea></label>
     <label>Service photo<input type="file" name="service_photo" accept="image/jpeg,image/png,image/webp"></label>
+    @if($item->photo())
+        <div class="service-photo-current"><img src="{{ asset($item->photo()) }}" alt="Current image for {{ $item->name ?: 'this service' }}"><span>Current service photo</span></div>
+    @endif
     <div class="form-row">
         <label>Search title<input name="seo_title" value="{{ $item->seo_title }}"></label>
         <label>Order<input type="number" name="sort_order" min="0" max="9999" value="{{ $item->sort_order ?? 0 }}"></label>

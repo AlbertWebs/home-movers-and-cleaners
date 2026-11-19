@@ -1,7 +1,7 @@
 @extends('admin.layout')
 @section('title', 'Bookings')
 @section('content')
-<div class="admin-welcome"><div><div class="eyebrow">CUSTOMER MANAGEMENT</div><h1>Booking requests</h1><p>Review requests, update their status, and set your available hours in Nairobi time.</p></div></div>
+<div class="admin-welcome booking-page-heading"><div><div class="eyebrow">CUSTOMER MANAGEMENT</div><h1>Booking requests</h1><p>Review requests, update their status, and set your available hours in Nairobi time.</p></div><span class="booking-total-badge">{{ number_format($bookings->total()) }} {{ \Illuminate\Support\Str::plural('request', $bookings->total()) }}</span></div>
 @include('partials.errors')
 
 <details class="admin-panel booking-admin-settings" @if($errors->has('opening') || $errors->has('closing') || $errors->has('dates.*')) open @endif>
@@ -92,14 +92,14 @@
             </div>
         </section>
     @endif
-    <div class="table-scroll"><table>
+    <div class="table-scroll booking-table-scroll"><table class="admin-data-table booking-data-table">
         <thead><tr><th>Reference and customer</th><th>Service</th><th>Booking details</th><th>Status and scheduling</th></tr></thead>
         <tbody>
         @forelse($bookings as $booking)
             <tr id="booking-{{ $booking->id }}">
-                <td class="ref-cell">{{ $booking->reference }}<small>{{ $booking->customer_name }} · {{ $booking->phone }}</small><small>{{ $booking->email }}</small></td>
-                <td>{{ $booking->service->name }}<small>{{ $booking->package_name }}</small><small>{{ $booking->listed_price ? 'KSh '.number_format($booking->listed_price) : 'Request a Quote' }}</small></td>
-                <td>
+                <td class="ref-cell" data-label="Reference and customer"><strong>{{ $booking->reference }}</strong><small>{{ $booking->customer_name }} · {{ $booking->phone }}</small><small>{{ $booking->email }}</small></td>
+                <td data-label="Service"><strong class="booking-service-name">{{ $booking->service?->name ?? 'Service removed' }}</strong><small>{{ $booking->package_name ?: 'No package selected' }}</small><small>{{ $booking->listed_price ? 'KSh '.number_format($booking->listed_price) : 'Request a Quote' }}</small></td>
+                <td data-label="Booking details">
                     {{ $booking->location }}
                     @if($booking->destination)<small>{{ $booking->pickup_location }} → {{ $booking->destination }}</small>@endif
                     @if($booking->preferred_date)<small>{{ $booking->preferred_date->format('j M Y') }} {{ $booking->preferred_time }}</small>@endif
@@ -112,8 +112,8 @@
                         </details>
                     @endif
                 </td>
-                <td>
-                    <form class="booking-admin-update" method="post" action="{{ route('admin.bookings.update', $booking) }}">
+                <td data-label="Status and scheduling">
+                    <form class="booking-admin-update" data-booking-status="{{ \Illuminate\Support\Str::slug($booking->status) }}" method="post" action="{{ route('admin.bookings.update', $booking) }}">
                         @csrf @method('PATCH')
                         <label>Status<select name="status">@foreach($statuses as $status)<option @selected($booking->status === $status)>{{ $status }}</option>@endforeach</select></label>
                         @if(preg_match('/^\d{2}:\d{2}$/', $booking->preferred_time ?? ''))

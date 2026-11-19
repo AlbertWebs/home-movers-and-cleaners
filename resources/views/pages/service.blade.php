@@ -30,7 +30,7 @@
     @endif
 @endpush
 @section('content')
-<section class="page-hero">
+<section class="page-hero service-detail-hero">
     <div class="wrap catalog-hero">
         <div>
             <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{{ route('home') }}">Home</a><span aria-hidden="true">/</span><a href="{{ route('services') }}">Services</a><span aria-hidden="true">/</span><span aria-current="page">{{ $service->name }}</span></nav>
@@ -38,10 +38,10 @@
             <p>{{ $service->summary }}</p>
             <a class="button" href="{{ route('booking', ['service' => $service->id]) }}">Request this service</a>
         </div>
-        @if($service->photo())<div class="site-content-photo"><img src="{{ asset($service->photo()) }}" alt="{{ $service->name }}"></div>@endif
+        @if($service->photo())<div class="site-content-photo"><img src="{{ asset($service->photo()) }}" alt="{{ $service->name }} service in Nairobi" fetchpriority="high"></div>@endif
     </div>
 </section>
-<section class="section section-white">
+<section class="section section-white service-detail-content">
     <div class="wrap detail-grid">
         <div class="site-prose">
             @if($service->description)<p>{{ $service->description }}</p>@endif
@@ -49,12 +49,14 @@
         </div>
         <aside class="detail-price">
             <h2>Service charges</h2>
+            <p class="detail-price-intro">Choose a package to start your booking. Listed prices are starting rates.</p>
             @forelse($service->packages->where('is_active', true) as $package)
                 <a class="price-line" href="{{ route('booking', ['service' => $service->id, 'package' => $package->id]) }}"><span>{{ $package->name }}</span><strong>{{ $package->priceLabel() }}</strong><span aria-hidden="true">→</span></a>
             @empty
                 <p>Request a Quote so we can review the work, property, and timing.</p>
             @endforelse
-            <p class="small-note">We confirm your scope and the applicable price before the appointment.</p>
+            <p class="small-note">We confirm the details and final price with you before the appointment.</p>
+            <a class="detail-quote-link" href="{{ route('booking', ['service' => $service->id]) }}">Need a custom quote? <span aria-hidden="true">→</span></a>
         </aside>
     </div>
 </section>

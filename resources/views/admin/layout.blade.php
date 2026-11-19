@@ -46,8 +46,20 @@
     </aside>
     <main class="admin-main">
         <header class="admin-top">
-            <div><span>HOME MOVERS &amp; CLEANERS</span><strong>@yield('title', 'Overview')</strong></div>
-            <div class="admin-user"><span>{{ auth()->user()->name }}</span><b>{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</b></div>
+            <div class="admin-top-context">
+                <span>ADMIN WORKSPACE</span>
+                <strong>@yield('title', 'Overview')</strong>
+            </div>
+            <div class="admin-top-actions">
+                <a class="admin-site-link" href="{{ route('home') }}" target="_blank" rel="noopener">
+                    View website
+                    <svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><path d="M11.25 3.75h5v5m-.5-4.5-7 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 10.5v4.25A1.25 1.25 0 0 1 13.75 16h-8.5A1.25 1.25 0 0 1 4 14.75v-8.5A1.25 1.25 0 0 1 5.25 5H9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                </a>
+                <div class="admin-user">
+                    <b aria-hidden="true">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</b>
+                    <span><strong>{{ auth()->user()->name }}</strong><small>{{ auth()->user()->is_admin ? 'Administrator' : str(auth()->user()->role ?? 'Team member')->headline() }}</small></span>
+                </div>
+            </div>
         </header>
         <div class="admin-content">
             @if(session('success'))<div class="notice" role="status">{{ session('success') }}</div>@endif

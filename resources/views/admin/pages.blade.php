@@ -3,7 +3,7 @@
 @section('content')
 <div class="admin-welcome"><div><div class="eyebrow">WEBSITE CONTENT</div><h1>Pages and policies</h1><p>Manage website pages, customer policies, and the terms customers agree to.</p></div></div>
 @include('partials.errors')
-<div class="admin-content-grid">
+<div class="admin-content-grid pages-workspace">
     <section class="admin-panel">
         <h2>Website pages</h2>
         <a class="button" href="{{ route('admin.pages') }}">New page</a>

@@ -7,7 +7,7 @@
     <title>Admin sign in | Home Movers and Cleaners</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="login-page">
+<body class="login-page admin-login-page">
     <main class="login-shell">
         <form class="login-card" method="post" action="{{ route('admin.authenticate') }}">
             @csrf

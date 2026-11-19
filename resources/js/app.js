@@ -72,12 +72,19 @@ if (siteHeader) {
 
 menuButton?.addEventListener('click', () => {
     const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
-    menuButton.setAttribute('aria-expanded', String(!isOpen));
+    setNavigationState(!isOpen);
     navigation?.classList.toggle('open', !isOpen);
 });
 
+const setNavigationState = (isOpen) => {
+    menuButton?.setAttribute('aria-expanded', String(isOpen));
+    menuButton?.setAttribute('aria-label', isOpen ? 'Close site navigation' : 'Open site navigation');
+    const menuLabel = menuButton?.querySelector('.menu-toggle-label');
+    if (menuLabel) menuLabel.textContent = isOpen ? 'Close' : 'Menu';
+};
+
 const closeNavigation = () => {
-    menuButton?.setAttribute('aria-expanded', 'false');
+    setNavigationState(false);
     navigation?.classList.remove('open');
 };
 
@@ -188,47 +195,165 @@ document.querySelectorAll('[data-copy-value]').forEach((button) => {
     });
 });
 
-document.querySelectorAll('[data-upload-progress-form]').forEach((form) => {
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const button = form.querySelector('[type="submit"]');
-        const progress = form.querySelector('[data-upload-progress]');
-        const status = form.querySelector('[data-upload-status]');
-        if (!button || !progress || !status || button.disabled) return;
+const formatUploadSize = (bytes) => {
+    if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
+document.querySelectorAll('input[type="file"]').forEach((input, index) => {
+    if (input.dataset.dropzoneReady === 'true') return;
+    input.dataset.dropzoneReady = 'true';
+
+    const dropzone = document.createElement('div');
+    dropzone.className = 'upload-dropzone';
+    dropzone.innerHTML = `<span class="upload-dropzone-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 15.5v3A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="upload-dropzone-copy"><strong>Drop images here or <u>browse files</u></strong><small class="upload-dropzone-hint">${input.multiple ? 'Select one or more images' : 'Choose an image from your device'}</small></span><span class="upload-dropzone-selection" aria-live="polite"></span><span class="upload-preview-list" hidden></span>`;
+    input.parentNode.insertBefore(dropzone, input);
+    dropzone.append(input);
+    const selection = dropzone.querySelector('.upload-dropzone-selection');
+    const previews = dropzone.querySelector('.upload-preview-list');
+    let previewUrls = [];
+
+    const renderSelection = () => {
+        previewUrls.forEach((url) => URL.revokeObjectURL(url));
+        previewUrls = [];
+        const files = [...(input.files ?? [])];
+        selection.textContent = files.length ? `${files.length} ${files.length === 1 ? 'image' : 'images'} selected · ${formatUploadSize(files.reduce((total, file) => total + file.size, 0))}` : '';
+        previews.replaceChildren();
+        previews.hidden = files.length === 0;
+        files.slice(0, 6).forEach((file) => {
+            const item = document.createElement('span');
+            item.className = 'upload-preview-item';
+            item.title = `${file.name} · ${formatUploadSize(file.size)}`;
+            if (file.type.startsWith('image/')) {
+                const image = document.createElement('img');
+                const url = URL.createObjectURL(file);
+                previewUrls.push(url);
+                image.src = url;
+                image.alt = '';
+                item.append(image);
+            }
+            const name = document.createElement('small');
+            name.textContent = file.name;
+            item.append(name);
+            previews.append(item);
+        });
+        if (files.length > 6) {
+            const extra = document.createElement('span');
+            extra.className = 'upload-preview-more';
+            extra.textContent = `+${files.length - 6}`;
+            previews.append(extra);
+        }
+        dropzone.classList.toggle('has-files', files.length > 0);
+        dropzone.closest('form')?.querySelector('[data-upload-status]')?.replaceChildren();
+    };
+
+    input.addEventListener('change', renderSelection);
+    dropzone.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        dropzone.classList.add('is-dragging');
+    });
+    dropzone.addEventListener('dragleave', (event) => {
+        if (!dropzone.contains(event.relatedTarget)) dropzone.classList.remove('is-dragging');
+    });
+    dropzone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        dropzone.classList.remove('is-dragging');
+        const files = [...(event.dataTransfer?.files ?? [])];
+        if (!files.length) return;
+        const accepted = (input.accept || '').split(',').map((type) => type.trim().toLowerCase()).filter(Boolean);
+        const invalid = accepted.length && files.some((file) => !accepted.some((type) => type.endsWith('/*') ? file.type.startsWith(type.slice(0, -1)) : type.startsWith('.') ? file.name.toLowerCase().endsWith(type) : file.type.toLowerCase() === type));
+        if (invalid) {
+            selection.textContent = `Please choose ${accepted.join(', ')} files.`;
+            dropzone.classList.add('has-error');
+            return;
+        }
+        dropzone.classList.remove('has-error');
+        const transfer = new DataTransfer();
+        files.forEach((file) => transfer.items.add(file));
+        input.files = transfer.files;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+});
+
+document.querySelectorAll('form[enctype="multipart/form-data"]').forEach((form, formIndex) => {
+    if (!form.querySelector('input[type="file"]')) return;
+    const submit = form.querySelector('button[type="submit"], input[type="submit"], button:not([type])');
+    if (!submit) return;
+
+    const feedback = document.createElement('div');
+    feedback.className = 'upload-feedback';
+    feedback.hidden = true;
+    feedback.innerHTML = `<span class="upload-progress-label" data-upload-status role="status" aria-live="polite"></span><span class="upload-progress-track" role="progressbar" aria-label="Image upload progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-upload-progress-bar></span></span>`;
+    submit.before(feedback);
+    const status = feedback.querySelector('[data-upload-status]');
+    const track = feedback.querySelector('[role="progressbar"]');
+    const bar = feedback.querySelector('[data-upload-progress-bar]');
+    let uploading = false;
+
+    form.addEventListener('submit', (event) => {
+        if (uploading) {
+            event.preventDefault();
+            return;
+        }
+        event.preventDefault();
+        uploading = true;
+        const originalLabel = submit.tagName === 'INPUT' ? submit.value : submit.innerHTML;
+        const setSubmitLabel = (label) => {
+            if (submit.tagName === 'INPUT') submit.value = label;
+            else submit.textContent = label;
+        };
         const request = new XMLHttpRequest();
-        const defaultLabel = button.textContent;
-        request.open('POST', form.action);
+        request.open((form.method || 'POST').toUpperCase(), form.action);
         request.setRequestHeader('Accept', 'application/json');
-        request.setRequestHeader('X-CSRF-TOKEN', form.querySelector('[name="_token"]')?.value ?? '');
-        request.timeout = 120000;
-        button.disabled = true;
-        button.textContent = 'Uploading';
-        progress.hidden = false;
-        progress.value = 0;
-        status.textContent = 'Uploading images…';
+        const csrf = form.querySelector('[name="_token"]')?.value;
+        if (csrf) request.setRequestHeader('X-CSRF-TOKEN', csrf);
+        request.timeout = 180000;
+        submit.disabled = true;
+        setSubmitLabel('Uploading images...');
+        feedback.hidden = false;
+        track.setAttribute('aria-valuenow', '0');
+        bar.style.width = '0%';
+        status.textContent = 'Preparing your images...';
         form.setAttribute('aria-busy', 'true');
 
         request.upload.addEventListener('progress', (uploadEvent) => {
-            if (uploadEvent.lengthComputable) progress.value = Math.round(uploadEvent.loaded / uploadEvent.total * 100);
+            if (!uploadEvent.lengthComputable) return;
+            const percent = Math.round(uploadEvent.loaded / uploadEvent.total * 100);
+            bar.style.width = `${percent}%`;
+            track.setAttribute('aria-valuenow', String(percent));
+            status.textContent = percent >= 100 ? 'Images uploaded. Saving your changes...' : `Uploading images... ${percent}%`;
+            setSubmitLabel(percent >= 100 ? 'Saving...' : `Uploading ${percent}%`);
         });
         request.addEventListener('load', () => {
-            if (request.status >= 200 && request.status < 300 && request.getResponseHeader('content-type')?.includes('application/json')) {
-                status.textContent = 'Check the image fields and try again.';
+            const contentType = request.getResponseHeader('content-type') ?? '';
+            let response = null;
+            if (contentType.includes('application/json')) {
+                try { response = JSON.parse(request.responseText); } catch { response = null; }
+            }
+            if (request.status >= 200 && request.status < 300 && !response?.errors) {
+                status.textContent = 'Upload complete. Refreshing...';
+                bar.style.width = '100%';
+                track.setAttribute('aria-valuenow', '100');
+                window.location.assign(request.responseURL || window.location.href);
                 return;
             }
-            if (request.status >= 200 && request.status < 300) {
-                status.textContent = 'Upload complete. Refreshing the media library.';
-                window.location.assign(request.responseURL || form.action);
-                return;
-            }
-            status.textContent = request.status === 413 ? 'These images are too large. Choose smaller files.' : 'Upload failed. Check the file types and try again.';
+            const errors = response?.errors ? Object.values(response.errors).flat().join(' ') : '';
+            status.textContent = request.status === 413 ? 'The selected images are too large. Choose smaller files.' : errors || response?.message || 'Upload failed. Check the image and try again.';
+            feedback.classList.add('has-error');
         });
-        request.addEventListener('error', () => { status.textContent = 'The connection was interrupted. Try uploading again.'; });
-        request.addEventListener('timeout', () => { status.textContent = 'The upload took too long. Try fewer or smaller images.'; });
+        request.addEventListener('error', () => {
+            status.textContent = 'The connection was interrupted. Please try uploading again.';
+            feedback.classList.add('has-error');
+        });
+        request.addEventListener('timeout', () => {
+            status.textContent = 'The upload took too long. Try fewer or smaller images.';
+            feedback.classList.add('has-error');
+        });
         request.addEventListener('loadend', () => {
-            button.disabled = false;
-            button.textContent = defaultLabel;
+            uploading = false;
+            submit.disabled = false;
+            if (submit.tagName === 'INPUT') submit.value = originalLabel;
+            else submit.innerHTML = originalLabel;
             form.removeAttribute('aria-busy');
         });
         request.send(new FormData(form));
