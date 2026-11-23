@@ -11,11 +11,20 @@ class BookingSchedule
 {
     public const STATUSES = ['Pending', 'New', 'Contacted', 'Quoted', 'Confirmed', 'Scheduled', 'In Progress', 'Completed', 'Cancelled', 'Rejected'];
 
+    public const HOURS = [
+        '06:00' => '6 AM',
+        '07:00' => '7 AM',
+        '11:00' => '11 AM',
+        '12:00' => '12 noon',
+        '13:00' => '1 PM',
+        '14:00' => '2 PM',
+        '15:00' => '3 PM',
+    ];
+
     public const DEFAULTS = [
         'enabled' => true,
         'weekdays' => [1, 2, 3, 4, 5, 6],
-        'opening' => '08:00',
-        'closing' => '17:00',
+        'hours' => ['06:00', '07:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
         'interval' => 60,
         'capacity' => 1,
         'notice' => 24,
@@ -47,6 +56,7 @@ class BookingSchedule
         $rules = $settings['service_rules'][$serviceId] ?? [];
         $settings = array_replace($settings, $rules);
         $interval = (int) $settings['interval'];
+        $hours = array_values(array_intersect(array_keys(self::HOURS), is_array($settings['hours']) ? $settings['hours'] : []));
         $duration = (int) ($rules['duration'] ?? $interval);
         $now = $this->now();
         $earliest = $now->addHours((int) $settings['notice']);
@@ -67,8 +77,12 @@ class BookingSchedule
                 continue;
             }
 
-            for ($start = $this->minutes($settings['opening']); $start + $duration <= $this->minutes($settings['closing']); $start += $interval) {
-                $time = sprintf('%02d:%02d', intdiv($start, 60), $start % 60);
+            foreach ($hours as $time) {
+                if (! preg_match('/^\d{2}:\d{2}$/', $time)) {
+                    continue;
+                }
+
+                $start = $this->minutes($time);
                 if ($day->setTimeFromTimeString($time)->lt($earliest)) {
                     continue;
                 }

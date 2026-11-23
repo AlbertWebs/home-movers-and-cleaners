@@ -230,8 +230,8 @@ class AdminController extends Controller
             'enabled' => ['required', 'boolean'],
             'weekdays' => ['required', 'array', 'min:1'],
             'weekdays.*' => ['integer', 'between:1,7', 'distinct'],
-            'opening' => ['required', 'date_format:H:i'],
-            'closing' => ['required', 'date_format:H:i', 'after:opening'],
+            'hours' => ['required', 'array', 'min:1'],
+            'hours.*' => ['required', 'string', 'distinct', Rule::in(array_keys(BookingSchedule::HOURS))],
             'interval' => ['required', 'integer', 'between:15,240'],
             'capacity' => ['required', 'integer', 'between:1,20'],
             'notice' => ['required', 'integer', 'between:0,336'],
@@ -244,6 +244,7 @@ class AdminController extends Controller
         $blocked = preg_split('/\s+/', trim($data['blocked_dates'] ?? ''), -1, PREG_SPLIT_NO_EMPTY);
         validator(['dates' => $blocked], ['dates.*' => ['date_format:Y-m-d']])->validate();
         $rules = [];
+        $hours = array_values(array_intersect(array_keys(BookingSchedule::HOURS), $data['hours']));
         foreach (Service::query()->pluck('id') as $id) {
             if ($duration = $data['service_rules'][$id]['duration'] ?? null) {
                 $rules[$id] = ['duration' => (int) $duration];
@@ -255,7 +256,7 @@ class AdminController extends Controller
             SiteSetting::updateOrCreate(['key' => 'booking_schedule'], ['value' => json_encode([
                 'enabled' => (bool) $data['enabled'],
                 'weekdays' => array_map('intval', $data['weekdays']),
-                'opening' => $data['opening'], 'closing' => $data['closing'],
+                'hours' => $hours,
                 'interval' => (int) $data['interval'], 'capacity' => (int) $data['capacity'], 'notice' => (int) $data['notice'],
                 'blocked_dates' => array_values(array_unique($blocked)), 'service_rules' => $rules,
             ], JSON_THROW_ON_ERROR)]);

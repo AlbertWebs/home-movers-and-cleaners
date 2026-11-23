@@ -1285,6 +1285,49 @@ a:focus-visible,button:focus-visible{outline:3px solid #ff9a78;outline-offset:3p
 @media (max-width: 760px) {
     .catalog-grid, .catalog-hero, .admin-content-grid { grid-template-columns: 1fr; }
 }
+
+.booking-time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+    gap: 10px;
+}
+
+.booking-time-slots legend,
+.booking-time-slots > p {
+    grid-column: 1 / -1;
+}
+
+.booking-time-slots > p {
+    margin: -6px 0 2px;
+    color: #63738e;
+    font-size: 13px;
+}
+
+.booking-time-option {
+    display: flex !important;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    margin: 0 !important;
+    padding: 9px 12px;
+    border: 1px solid #e0e7f0;
+    border-radius: 9px;
+    background: #fff;
+    color: #193761;
+    cursor: pointer;
+    transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+
+.booking-time-option:has(input:checked) {
+    border-color: #f36a20;
+    background: #fff7f1;
+    box-shadow: 0 0 0 2px #f36a2018;
+}
+
+.booking-time-option input[type="checkbox"] {
+    flex: 0 0 auto;
+    accent-color: #f36a20;
+}
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .catalog-card { transition: transform .25s, box-shadow .25s; }
     .catalog-card:hover { transform: translateY(-4px); box-shadow: 0 18px 32px #1325571c; }

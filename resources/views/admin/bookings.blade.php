@@ -4,7 +4,7 @@
 <div class="admin-welcome booking-page-heading"><div><div class="eyebrow">CUSTOMER MANAGEMENT</div><h1>Booking requests</h1><p>Review requests, update their status, and set your available hours in Nairobi time.</p></div><span class="booking-total-badge">{{ number_format($bookings->total()) }} {{ \Illuminate\Support\Str::plural('request', $bookings->total()) }}</span></div>
 @include('partials.errors')
 
-<details class="admin-panel booking-admin-settings" @if($errors->has('opening') || $errors->has('closing') || $errors->has('dates.*')) open @endif>
+<details class="admin-panel booking-admin-settings" @if($errors->has('hours') || $errors->has('dates.*')) open @endif>
     <summary>Availability and email settings</summary>
     <form class="settings-form" method="post" action="{{ route('admin.bookings.schedule') }}">
         @csrf @method('PATCH')
@@ -15,12 +15,14 @@
                 <label class="booking-inline-field"><input type="checkbox" name="weekdays[]" value="{{ $index + 1 }}" @checked(in_array($index + 1, old('weekdays', $schedule['weekdays'])))> {{ $day }}</label>
             @endforeach
         </fieldset>
+        <fieldset class="booking-weekdays booking-time-slots"><legend>Moving hours</legend>
+            <p>Choose the appointment start times offered to customers for all services.</p>
+            @foreach(\App\BookingSchedule::HOURS as $time => $label)
+                <label class="booking-time-option"><input type="checkbox" name="hours[]" value="{{ $time }}" @checked(in_array($time, old('hours', $schedule['hours'])))> <span>{{ $label }}</span></label>
+            @endforeach
+        </fieldset>
         <div class="form-row">
-            <label>Opening time<input name="opening" type="time" required value="{{ old('opening', $schedule['opening']) }}"></label>
-            <label>Closing time<input name="closing" type="time" required value="{{ old('closing', $schedule['closing']) }}"></label>
-        </div>
-        <div class="form-row">
-            <label>Slot interval, minutes<input name="interval" type="number" min="15" max="240" required value="{{ old('interval', $schedule['interval']) }}"></label>
+            <label>Default service duration, minutes<input name="interval" type="number" min="15" max="240" required value="{{ old('interval', $schedule['interval']) }}"></label>
             <label>Concurrent bookings<input name="capacity" type="number" min="1" max="20" required value="{{ old('capacity', $schedule['capacity']) }}"></label>
             <label>Minimum notice, hours<input name="notice" type="number" min="0" max="336" required value="{{ old('notice', $schedule['notice']) }}"></label>
         </div>
