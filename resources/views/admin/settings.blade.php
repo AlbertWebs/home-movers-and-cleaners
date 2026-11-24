@@ -13,7 +13,7 @@
     <div id="settings-company" class="settings-section settings-company-section">
         <h2>Company and contact</h2>
         <div class="form-row"><label>Company name<input name="company_name" required value="{{ old('company_name', $settings['company_name'] ?? '') }}"></label><label>Tagline<input name="tagline" value="{{ old('tagline', $settings['tagline'] ?? '') }}"></label></div>
-        <div class="form-row"><label>Telephone<input name="phone" required value="{{ old('phone', $settings['phone'] ?? '') }}"></label><label>WhatsApp number<input name="whatsapp" required value="{{ old('whatsapp', $settings['whatsapp'] ?? '') }}"><small>Include country code, without + or spaces.</small></label></div>
+        <div class="form-row"><label>Telephone<input name="phone" required value="{{ old('phone', $settings['phone'] ?? '') }}"></label><label>Official WhatsApp number<input name="whatsapp" required value="{{ old('whatsapp', $settings['whatsapp'] ?? '25479948186') }}" placeholder="25479948186"><small>Editable here. Include country code, without + or spaces.</small></label></div>
         <div class="form-row"><label>Business email<input type="email" name="business_email" value="{{ old('business_email', $settings['business_email'] ?? '') }}"></label><label>Business location<input name="business_location" value="{{ old('business_location', $settings['business_location'] ?? '') }}"></label></div>
     </div>
 

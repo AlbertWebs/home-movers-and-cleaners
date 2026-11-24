@@ -35,6 +35,7 @@ Route::middleware(['auth', 'can:access-admin'])->prefix('admin')->name('admin.')
     Route::middleware('can:manage-bookings')->group(function (): void {
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
         Route::get('/bookings/export', [AdminController::class, 'exportBookings'])->name('bookings.export');
+        Route::get('/bookings/{booking}/photos/{photo}', [BookingController::class, 'quotePhoto'])->whereNumber('photo')->name('bookings.photos.show');
         Route::patch('/bookings/schedule', [AdminController::class, 'updateSchedule'])->name('bookings.schedule');
         Route::patch('/bookings/{booking}', [AdminController::class, 'updateBooking'])->name('bookings.update');
         Route::get('/enquiries', [AdminController::class, 'enquiries'])->name('enquiries');

@@ -9,8 +9,8 @@
     @if($item->exists) @method('PATCH') @endif
     <label>Service name<input name="name" required value="{{ $item->name }}"></label>
     @unless($item->exists)<label>URL name<input name="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*"></label>@endunless
-    <label>Short description<textarea name="summary" required rows="2">{{ $item->summary }}</textarea></label>
-    <label>Introduction<textarea name="description" rows="3">{{ $item->description }}</textarea></label>
+    <label>Short description<textarea name="summary" required rows="2" placeholder="State who this service is for and its main benefit.">{{ $item->summary }}</textarea></label>
+    <label>Introduction<textarea name="description" rows="3" placeholder="Explain the work included, service area, and how customers can prepare.">{{ $item->description }}</textarea><small>Use confirmed service details so customers know what to expect.</small></label>
     @include('admin.markdown-field', ['editorId' => $item->id ?? 'new', 'fieldName' => 'content', 'fieldLabel' => 'Service details', 'fieldValue' => old('content', $serviceContent), 'required' => false])
     <label>Benefits, one per line<textarea name="benefits_text" rows="3">{{ old('benefits_text', implode(PHP_EOL, $serviceBenefits)) }}</textarea></label>
     <label>FAQs, one per line. Separate the question and answer with |<textarea name="faqs_text" rows="4">{{ old('faqs_text', collect($serviceFaqs)->map(fn ($faq) => $faq['question'].' | '.$faq['answer'])->implode(PHP_EOL)) }}</textarea></label>

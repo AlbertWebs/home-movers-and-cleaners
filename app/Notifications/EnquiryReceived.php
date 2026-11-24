@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Enquiry;
 use App\Models\SiteSetting;
+use App\Support\NotificationRecipients;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -18,7 +19,7 @@ class EnquiryReceived extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        $mail = (new MailMessage)
             ->subject('A new website enquiry')
             ->view(['html' => 'emails.enquiry-received', 'text' => 'emails.enquiry-received-text'], [
                 'enquiry' => $this->enquiry->loadMissing('service'),
@@ -27,5 +28,12 @@ class EnquiryReceived extends Notification
                 'phone' => SiteSetting::query()->where('key', 'phone')->value('value') ?? '07999 48 186',
                 'actionUrl' => route('admin.enquiries'),
             ]);
+
+        $ccRecipients = NotificationRecipients::cc();
+        if ($ccRecipients !== []) {
+            $mail->cc($ccRecipients);
+        }
+
+        return $mail;
     }
 }

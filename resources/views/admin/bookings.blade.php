@@ -4,7 +4,7 @@
 <div class="admin-welcome booking-page-heading"><div><div class="eyebrow">CUSTOMER MANAGEMENT</div><h1>Booking requests</h1><p>Review requests, update their status, and set your available hours in Nairobi time.</p></div><span class="booking-total-badge">{{ number_format($bookings->total()) }} {{ \Illuminate\Support\Str::plural('request', $bookings->total()) }}</span></div>
 @include('partials.errors')
 
-<details class="admin-panel booking-admin-settings" @if($errors->has('hours') || $errors->has('dates.*')) open @endif>
+<details class="admin-panel booking-admin-settings" @if($errors->any()) open @endif>
     <summary>Availability and email settings</summary>
     <form class="settings-form" method="post" action="{{ route('admin.bookings.schedule') }}">
         @csrf @method('PATCH')
@@ -33,9 +33,10 @@
             @endforeach
         </fieldset>
         <div class="form-row">
-            <label>Booking notification email<input name="booking_recipient" type="email" value="{{ old('booking_recipient', $siteSettings['booking_recipient'] ?? '') }}"></label>
-            <label>Enquiry notification email<input name="enquiry_recipient" type="email" value="{{ old('enquiry_recipient', $siteSettings['enquiry_recipient'] ?? '') }}"></label>
+            <label>Booking notification email<input name="booking_recipient" type="email" required value="{{ old('booking_recipient', $siteSettings['booking_recipient'] ?? 'bookings@homemoversandcleaners.co.ke') }}"></label>
+            <label>Enquiry notification email<input name="enquiry_recipient" type="email" required value="{{ old('enquiry_recipient', $siteSettings['enquiry_recipient'] ?? 'bookings@homemoversandcleaners.co.ke') }}"></label>
         </div>
+        <label>CC notification emails<input name="notification_cc" type="text" value="{{ old('notification_cc', $siteSettings['notification_cc'] ?? 'albertmuhatia@gmail.com, homemoversandcleaners@gmail.com') }}" placeholder="name@example.com, another@example.com"><small>Separate addresses with commas. These receive copies of booking and website enquiry notifications.</small></label>
         <button class="button" type="submit">Save schedule</button>
     </form>
 </details>
@@ -106,6 +107,13 @@
                     @if($booking->destination)<small>{{ $booking->pickup_location }} → {{ $booking->destination }}</small>@endif
                     @if($booking->preferred_date)<small>{{ $booking->preferred_date->format('j M Y') }} {{ $booking->preferred_time }}</small>@endif
                     @if($booking->instructions)<small>{{ $booking->instructions }}</small>@endif
+                    @if($booking->quote_photos)
+                        <small class="booking-quote-photos">Quote photos:
+                            @foreach($booking->quote_photos as $photoIndex => $photoPath)
+                                <a href="{{ route('admin.bookings.photos.show', [$booking, $photoIndex]) }}">Photo {{ $loop->iteration }}</a>@if(!$loop->last), @endif
+                            @endforeach
+                        </small>
+                    @endif
                     @if($booking->status_history)
                         <details><summary>Status history</summary>
                             @foreach(array_reverse($booking->status_history) as $entry)
@@ -117,7 +125,10 @@
                 <td data-label="Status and scheduling">
                     <form class="booking-admin-update" data-booking-status="{{ \Illuminate\Support\Str::slug($booking->status) }}" method="post" action="{{ route('admin.bookings.update', $booking) }}">
                         @csrf @method('PATCH')
-                        <label>Status<select name="status">@foreach($statuses as $status)<option @selected($booking->status === $status)>{{ $status }}</option>@endforeach</select></label>
+                        <label>Status<select name="status">@foreach($statuses as $status)@if($status !== 'Expired' || $booking->status === 'Expired')<option @selected($booking->status === $status)>{{ $status }}</option>@endif @endforeach</select></label>
+                        @if(in_array($booking->status, ['Quoted', 'Expired'], true) && $booking->quoteExpiresAt())
+                            <small>Quote {{ $booking->status === 'Expired' ? 'expired' : 'valid until' }} {{ $booking->quoteExpiresAt()->timezone('Africa/Nairobi')->format('j M Y g:i A') }} Nairobi time.@if($booking->status === 'Expired') Select Quoted to issue a fresh 30-day quote.@endif</small>
+                        @endif
                         @if(preg_match('/^\d{2}:\d{2}$/', $booking->preferred_time ?? ''))
                             <label>Date<input name="preferred_date" type="date" value="{{ $booking->preferred_date?->toDateString() }}"></label>
                             <label>Time<input name="preferred_time" type="time" value="{{ $booking->preferred_time }}"></label>

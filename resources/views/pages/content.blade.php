@@ -26,7 +26,7 @@
                 </div>
                 <div class="about-intro-actions">
                     <a class="about-primary-action" href="{{ route('contact') }}">Contact Our Team <span aria-hidden="true">→</span></a>
-                    <a class="about-whatsapp-action" href="https://wa.me/{{ $siteSettings['whatsapp'] ?? '254799948186' }}" target="_blank" rel="noopener">
+                    <a class="about-whatsapp-action" href="{{ $whatsappLink('Hello, I would like to learn more about Home Movers and Cleaners.') ?? route('contact') }}" target="_blank" rel="noopener noreferrer">
                         <img src="{{ asset('images/whatsapp-symbol.svg') }}" alt="">
                         Chat on WhatsApp
                     </a>

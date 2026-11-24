@@ -6,6 +6,7 @@ use App\Models\ContentPage;
 use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Models\User;
+use App\Support\WhatsAppLink;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -30,7 +31,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('manage-content', fn (User $user): bool => $user->hasAdminRole('super_admin', 'administrator', 'content_editor'));
         Gate::define('manage-settings', fn (User $user): bool => $user->hasAdminRole('super_admin', 'administrator'));
         View::composer('*', function ($view): void {
-            $view->with('siteSettings', SiteSetting::query()->pluck('value', 'key'));
+            $settings = SiteSetting::query()->pluck('value', 'key');
+            $view->with([
+                'siteSettings' => $settings,
+                'whatsappLink' => fn (string $message): ?string => WhatsAppLink::make($settings->get('whatsapp'), $message),
+            ]);
         });
         View::composer('layouts.app', function ($view): void {
             $view->with('footerServices', Service::query()->where('is_active', true)->orderBy('sort_order')->get());

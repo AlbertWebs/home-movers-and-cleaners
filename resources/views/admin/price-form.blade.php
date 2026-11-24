@@ -2,7 +2,7 @@
     @csrf
     @if($item->exists) @method('PATCH') @endif
     <label>Package name<input name="name" required value="{{ $item->name }}"></label>
-    <label>Included in the package<textarea name="description" rows="2">{{ $item->description }}</textarea></label>
+    <label>What is included<textarea name="description" rows="3" placeholder="Describe the work, item or room count, materials, and any limits for this package.">{{ $item->description }}</textarea><small>Keep these details accurate so customers know what the listed price covers.</small></label>
     <div class="form-row">
         <label>Price type<select name="pricing_type">@foreach(['starting' => 'Starting price', 'fixed' => 'Fixed price', 'quote' => 'Quote only'] as $value => $label)<option value="{{ $value }}" @selected($item->pricing_type === $value)>{{ $label }}</option>@endforeach</select></label>
         <label>Amount (KSh)<input type="number" min="0" name="amount" value="{{ $item->amount }}"></label>

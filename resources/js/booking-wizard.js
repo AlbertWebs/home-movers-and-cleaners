@@ -18,6 +18,7 @@ export function initBookingWizard(form) {
     const date = form.elements.preferred_date;
     const originalTime = form.elements.preferred_time;
     const packageSelect = form.elements.price_package_id;
+    const quotePhotos = form.querySelector('[data-quote-photos]');
     const packageOptions = [...packageSelect.querySelectorAll('[data-package-service]')];
     const time = document.createElement('select');
     time.name = originalTime.name;
@@ -60,6 +61,7 @@ export function initBookingWizard(form) {
             if (option.dataset.packageService === service?.value) packageSelect.add(option);
         }
         packageSelect.value = [...packageSelect.options].some((option) => option.value === oldPackage) ? oldPackage : '';
+        updateQuotePhotosVisibility();
         const moving = service?.dataset.serviceSlug === 'moving-services';
         const location = form.querySelector('[data-location]');
         const addresses = form.querySelector('[data-moving-addresses]');
@@ -77,6 +79,12 @@ export function initBookingWizard(form) {
             'house-deep-cleaning': 'Property size and cleaning requirements',
             'sofa-mattress-cleaning': 'Items and upholstery to clean',
         }[service?.dataset.serviceSlug] ?? 'Additional instructions';
+    }
+
+    function updateQuotePhotosVisibility() {
+        const isQuoteRequest = !packageSelect.value || packageSelect.selectedOptions[0]?.dataset.pricingType === 'quote';
+        quotePhotos.hidden = !isQuoteRequest;
+        quotePhotos.querySelector('input[type="file"]').disabled = !isQuoteRequest;
     }
 
     function renderCalendar() {
@@ -152,6 +160,7 @@ export function initBookingWizard(form) {
             ['Name', data.get('customer_name')], ['Phone', data.get('phone')], ['Email', data.get('email')],
             ['Service location', data.get('location')], ['Pickup', data.get('pickup_location')], ['Destination', data.get('destination')],
             ['Instructions', data.get('instructions')],
+            ['Quote photos', data.getAll('quote_photos[]').filter((file) => file instanceof File && file.name).map((file) => file.name).join(', ')],
         ];
         for (const [label, value] of entries) {
             if (!value) continue;
@@ -164,6 +173,10 @@ export function initBookingWizard(form) {
     }
 
     form.addEventListener('change', (event) => {
+        if (event.target.name === 'price_package_id') {
+            updateQuotePhotosVisibility();
+            return;
+        }
         if (event.target.name !== 'service_id') return;
         window.dispatchEvent(new CustomEvent('site-analytics-event', { detail: { name: 'service_selected' } }));
         date.value = '';
@@ -200,7 +213,8 @@ export function initBookingWizard(form) {
     });
     back.addEventListener('click', () => showStep(stepIndex - 1));
     form.addEventListener('form-invalid', ({ detail }) => {
-        const field = form.querySelector('[name="' + CSS.escape(detail) + '"]');
+        const field = form.querySelector('[name="' + CSS.escape(detail) + '"]')
+            ?? form.querySelector('[name="' + CSS.escape(detail) + '[]"]');
         const index = steps.indexOf(field?.closest('fieldset'));
         if (index >= 0) showStep(index, false);
     });

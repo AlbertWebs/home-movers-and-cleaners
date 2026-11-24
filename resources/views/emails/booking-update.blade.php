@@ -1,8 +1,19 @@
 @php
     $serviceName = $booking->service?->name ?? 'Requested service';
     $dateTime = ($booking->preferred_date?->format('j F Y') ?? 'Date to be agreed').($booking->preferred_time ? ' at '.$booking->preferred_time : '').' (Nairobi time)';
-    $nextStep = $booking->status === 'Pending' ? 'Our team will review your requested time and contact you to confirm the details.' : 'The booking status or schedule has been updated. Use the button below to review the latest information.';
-    $heading = $forAdmin ? 'A new booking request' : ($booking->status === 'Pending' ? 'We received your request' : 'Your booking has been updated');
+    $quoteExpiresAt = $booking->quoteExpiresAt()?->timezone('Africa/Nairobi')->format('j F Y g:i A').' Nairobi time';
+    $nextStep = match ($booking->status) {
+        'Pending' => 'Our team will review your requested time and contact you to confirm the details.',
+        'Quoted' => 'Your quotation is valid until '.$quoteExpiresAt.'. Contact us before then if you would like to proceed.',
+        'Expired' => 'This quotation expired on '.$quoteExpiresAt.'. Contact us if you would like an updated quotation.',
+        default => 'The booking status or schedule has been updated. Use the button below to review the latest information.',
+    };
+    $heading = $forAdmin ? 'A new booking request' : match ($booking->status) {
+        'Pending' => 'We received your request',
+        'Quoted' => 'Your quotation is ready',
+        'Expired' => 'Your quotation has expired',
+        default => 'Your booking has been updated',
+    };
     $buttonLabel = $forAdmin ? 'Manage bookings' : 'View booking status';
 @endphp
 <!doctype html>
@@ -20,7 +31,10 @@
                 @if($forAdmin)
                     <tr><td style="padding:9px 0;border-bottom:1px solid #e6eaf0;color:#647086">Customer</td><td style="padding:9px 0;border-bottom:1px solid #e6eaf0">{{ $booking->customer_name }}</td></tr>
                     <tr><td style="padding:9px 0;border-bottom:1px solid #e6eaf0;color:#647086">Phone</td><td style="padding:9px 0;border-bottom:1px solid #e6eaf0">{{ $booking->phone }}</td></tr>
+                    @if($booking->quote_photos)<tr><td style="padding:9px 0;border-bottom:1px solid #e6eaf0;color:#647086">Quote photos</td><td style="padding:9px 0;border-bottom:1px solid #e6eaf0">{{ count($booking->quote_photos) }} uploaded. View them in the admin booking record.</td></tr>@endif
                 @endif
+                    @if($booking->status === 'Quoted')<tr><td style="padding:9px 0;border-bottom:1px solid #e6eaf0;color:#647086">Quote valid until</td><td style="padding:9px 0;border-bottom:1px solid #e6eaf0">{{ $quoteExpiresAt }}</td></tr>@endif
+                    @if($booking->status === 'Expired')<tr><td style="padding:9px 0;border-bottom:1px solid #e6eaf0;color:#647086">Quote expired</td><td style="padding:9px 0;border-bottom:1px solid #e6eaf0">{{ $quoteExpiresAt }}</td></tr>@endif
                 @foreach(['Reference' => $booking->reference, 'Service' => $serviceName, 'Status' => $booking->status, 'Date and time' => $dateTime] as $label => $value)
                     <tr><td style="padding:9px 0;border-bottom:1px solid #e6eaf0;color:#647086">{{ $label }}</td><td style="padding:9px 0;border-bottom:1px solid #e6eaf0">{{ $value }}</td></tr>
                 @endforeach

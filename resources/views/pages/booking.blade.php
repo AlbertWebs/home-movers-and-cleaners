@@ -34,12 +34,12 @@
             <div class="booking-help-card">
                 <span class="booking-help-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 13v-2a8 8 0 0 1 16 0v2M4 12H3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h2v-7Zm16 0h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2v-7ZM18 19a6 6 0 0 1-6 3h-1"/></svg></span>
                 <span><strong>Need help booking?</strong><small>Our team is happy to help.</small></span>
-                <a href="{{ ($siteSettings['whatsapp'] ?? null) ? 'https://wa.me/' . $siteSettings['whatsapp'] : route('contact') }}" class="booking-help-link">Chat with us</a>
+                <a href="{{ $whatsappLink('Hello, I need help with a booking request.') ?? route('contact') }}" class="booking-help-link">Chat with us</a>
             </div>
         </aside>
 
-        <form class="form-card booking-form" method="post" action="{{ route('booking.store') }}"
-            data-booking-wizard data-ajax-form data-availability-url="{{ route('booking.availability') }}"
+        <form class="form-card booking-form" method="post" action="{{ route('booking.store') }}" enctype="multipart/form-data"
+            data-booking-wizard data-availability-url="{{ route('booking.availability') }}"
             data-today="{{ now('Africa/Nairobi')->toDateString() }}">
             @csrf
             @include('partials.errors')
@@ -73,7 +73,7 @@
                         @foreach($services as $service)
                             <optgroup label="{{ $service->name }}">
                                 @foreach($service->packages as $package)
-                                    <option value="{{ $package->id }}" data-package-service="{{ $service->id }}" @selected(old('price_package_id', request('package')) == $package->id)>{{ $package->name }} · {{ $package->priceLabel() }}</option>
+                                    <option value="{{ $package->id }}" data-package-service="{{ $service->id }}" data-pricing-type="{{ $package->pricing_type }}" @selected(old('price_package_id', request('package')) == $package->id)>{{ $package->name }} · {{ $package->priceLabel() }}</option>
                                 @endforeach
                             </optgroup>
                         @endforeach
@@ -113,6 +113,10 @@
                     <label>Destination address<input name="destination" value="{{ old('destination') }}"></label>
                 </div>
                 <label><span data-instructions-label>Additional instructions</span><textarea name="instructions" rows="4" placeholder="Share property size, rooms, items, access notes, or cleaning needs"></textarea></label>
+                <label data-quote-photos hidden>Photos for your quote <span class="optional">Optional</span>
+                    <input type="file" name="quote_photos[]" accept="image/jpeg,image/png,image/webp" multiple data-max-files="5" data-max-size="5120">
+                    <small>Upload up to 5 JPG, PNG, or WebP photos, up to 5 MB each. Photos are shared privately with our booking team.</small>
+                </label>
             </fieldset>
 
             <fieldset data-booking-step hidden>

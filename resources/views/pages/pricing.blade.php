@@ -65,6 +65,7 @@
     <h2>Questions about pricing</h2>
     <details><summary>What does a starting price mean?</summary><p>It is the starting amount for the named package. Property size, access and additional work can affect the final quote.</p></details>
     <details><summary>What if I can’t find my needs on this list?</summary><p>Choose Request a Quote and describe the work you need. The team will check availability and discuss pricing with you.</p></details>
+    <details><summary>How long is a quotation valid?</summary><p>Quotations are valid for 30 days from the date they are issued.</p></details>
 </div></section>
 <section class="cta-section"><div class="wrap cta-inner"><h2>Ready to request a service?</h2><a class="button button-light" href="{{ route('booking') }}">Book a service</a></div></section>
 @endsection

@@ -179,6 +179,19 @@ class AdminController extends Controller
         $changed = DB::transaction(function () use ($booking, $data, $schedule): bool {
             $schedule->lock();
             $booking->refresh();
+            $quoteHasExpired = $booking->quoteHasExpired(CarbonImmutable::now('UTC'));
+            $renewingQuote = $data['status'] === 'Quoted'
+                && $booking->status === 'Quoted'
+                && ($quoteHasExpired || ! $booking->quote_issued_at);
+
+            if (($booking->status === 'Expired' || $quoteHasExpired) && ! in_array($data['status'], ['Quoted', 'Cancelled', 'Rejected'], true)) {
+                throw ValidationException::withMessages(['status' => 'This quotation has expired. Reissue it as Quoted before confirming the booking.']);
+            }
+
+            if ($data['status'] === 'Expired' && $booking->status !== 'Expired') {
+                throw ValidationException::withMessages(['status' => 'Quotations expire automatically after 30 days.']);
+            }
+
             $rescheduled = isset($data['preferred_date'], $data['preferred_time'])
                 && ($data['preferred_date'] !== $booking->preferred_date?->toDateString() || $data['preferred_time'] !== $booking->preferred_time);
             $activeStatus = ! in_array($data['status'], ['Cancelled', 'Rejected'], true);
@@ -195,11 +208,15 @@ class AdminController extends Controller
 
             $statusChanged = $booking->status !== $data['status'];
             $history = $booking->status_history ?? [];
-            if ($statusChanged || $rescheduled) {
+            if ($statusChanged || $rescheduled || $renewingQuote) {
                 $history[] = ['status' => $data['status'], 'at' => now()->toIso8601String(), 'date' => $dateValue, 'time' => $timeValue];
             }
+            $quoteIssuedAt = $data['status'] === 'Quoted' && ($statusChanged || $renewingQuote)
+                ? CarbonImmutable::now('UTC')
+                : $booking->quote_issued_at;
             $booking->forceFill([
                 'status' => $data['status'],
+                'quote_issued_at' => $quoteIssuedAt,
                 'internal_notes' => $data['internal_notes'] ?? null,
                 'preferred_date' => $dateValue,
                 'preferred_time' => $timeValue,
@@ -207,12 +224,12 @@ class AdminController extends Controller
                 'status_history' => $history,
             ])->save();
 
-            return $statusChanged || $rescheduled;
+            return $statusChanged || $rescheduled || $renewingQuote;
         }, attempts: 5);
 
         if ($changed && $booking->email) {
             try {
-                $url = URL::temporarySignedRoute('booking.confirmation', now()->addDays(30), ['reference' => $booking->reference]);
+                $url = URL::temporarySignedRoute('booking.confirmation', now()->addDays($booking->status === 'Quoted' ? 90 : 30), ['reference' => $booking->reference]);
                 Notification::route('mail', $booking->email)->notify(new BookingUpdate($booking, false, $url));
             } catch (Throwable $exception) {
                 report($exception);
@@ -238,9 +255,12 @@ class AdminController extends Controller
             'blocked_dates' => ['nullable', 'string', 'max:5000'],
             'service_rules' => ['nullable', 'array'],
             'service_rules.*.duration' => ['nullable', 'integer', 'between:15,480'],
-            'booking_recipient' => ['nullable', 'email', 'max:255'],
-            'enquiry_recipient' => ['nullable', 'email', 'max:255'],
+            'booking_recipient' => ['required', 'email', 'max:255'],
+            'enquiry_recipient' => ['required', 'email', 'max:255'],
+            'notification_cc' => ['nullable', 'string', 'max:1000'],
         ]);
+        $notificationCc = preg_split('/[,;\s]+/', trim($data['notification_cc'] ?? ''), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        validator(['notification_cc' => $notificationCc], ['notification_cc.*' => ['email', 'max:255']])->validate();
         $blocked = preg_split('/\s+/', trim($data['blocked_dates'] ?? ''), -1, PREG_SPLIT_NO_EMPTY);
         validator(['dates' => $blocked], ['dates.*' => ['date_format:Y-m-d']])->validate();
         $rules = [];
@@ -251,7 +271,7 @@ class AdminController extends Controller
             }
         }
 
-        DB::transaction(function () use ($data, $blocked, $rules, $schedule): void {
+        DB::transaction(function () use ($data, $blocked, $rules, $schedule, $hours, $notificationCc): void {
             $schedule->lock();
             SiteSetting::updateOrCreate(['key' => 'booking_schedule'], ['value' => json_encode([
                 'enabled' => (bool) $data['enabled'],
@@ -261,8 +281,9 @@ class AdminController extends Controller
                 'blocked_dates' => array_values(array_unique($blocked)), 'service_rules' => $rules,
             ], JSON_THROW_ON_ERROR)]);
             foreach (['booking_recipient', 'enquiry_recipient'] as $key) {
-                SiteSetting::updateOrCreate(['key' => $key], ['value' => $data[$key] ?? null]);
+                SiteSetting::updateOrCreate(['key' => $key], ['value' => $data[$key]]);
             }
+            SiteSetting::updateOrCreate(['key' => 'notification_cc'], ['value' => implode(', ', array_values(array_unique(array_map('strtolower', $notificationCc))))]);
         }, attempts: 5);
 
         return back()->with('success', 'Booking schedule saved.');

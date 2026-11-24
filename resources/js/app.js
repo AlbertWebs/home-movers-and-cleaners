@@ -211,12 +211,28 @@ document.querySelectorAll('input[type="file"]').forEach((input, index) => {
     dropzone.append(input);
     const selection = dropzone.querySelector('.upload-dropzone-selection');
     const previews = dropzone.querySelector('.upload-preview-list');
+    const hint = dropzone.querySelector('.upload-dropzone-hint');
+    const maxFiles = Number(input.dataset.maxFiles || 0);
+    const maxFileSize = Number(input.dataset.maxSize || 0) * 1024;
+    if (hint && maxFiles) hint.textContent = `Up to ${maxFiles} images, ${formatUploadSize(maxFileSize)} each`;
     let previewUrls = [];
 
     const renderSelection = () => {
         previewUrls.forEach((url) => URL.revokeObjectURL(url));
         previewUrls = [];
         const files = [...(input.files ?? [])];
+        const invalid = maxFiles && files.length > maxFiles
+            ? `Choose no more than ${maxFiles} images.`
+            : maxFileSize && files.some((file) => file.size > maxFileSize)
+                ? `Each image must be ${formatUploadSize(maxFileSize)} or smaller.`
+                : '';
+        input.setCustomValidity(invalid);
+        if (invalid) {
+            selection.textContent = invalid;
+            dropzone.classList.add('has-error');
+            return;
+        }
+        dropzone.classList.remove('has-error');
         selection.textContent = files.length ? `${files.length} ${files.length === 1 ? 'image' : 'images'} selected · ${formatUploadSize(files.reduce((total, file) => total + file.size, 0))}` : '';
         previews.replaceChildren();
         previews.hidden = files.length === 0;
@@ -262,11 +278,17 @@ document.querySelectorAll('input[type="file"]').forEach((input, index) => {
         if (!files.length) return;
         const accepted = (input.accept || '').split(',').map((type) => type.trim().toLowerCase()).filter(Boolean);
         const invalid = accepted.length && files.some((file) => !accepted.some((type) => type.endsWith('/*') ? file.type.startsWith(type.slice(0, -1)) : type.startsWith('.') ? file.name.toLowerCase().endsWith(type) : file.type.toLowerCase() === type));
-        if (invalid) {
-            selection.textContent = `Please choose ${accepted.join(', ')} files.`;
+        const tooMany = maxFiles && files.length > maxFiles;
+        const tooLarge = maxFileSize && files.some((file) => file.size > maxFileSize);
+        if (invalid || tooMany || tooLarge) {
+            selection.textContent = invalid ? `Please choose ${accepted.join(', ')} files.` : tooMany
+                ? `Choose no more than ${maxFiles} images.`
+                : `Each image must be ${formatUploadSize(maxFileSize)} or smaller.`;
+            input.setCustomValidity(selection.textContent);
             dropzone.classList.add('has-error');
             return;
         }
+        input.setCustomValidity('');
         dropzone.classList.remove('has-error');
         const transfer = new DataTransfer();
         files.forEach((file) => transfer.items.add(file));
@@ -291,6 +313,8 @@ document.querySelectorAll('form[enctype="multipart/form-data"]').forEach((form, 
     let uploading = false;
 
     form.addEventListener('submit', (event) => {
+        const selectedFiles = [...form.querySelectorAll('input[type="file"]')].some((input) => !input.disabled && input.files?.length);
+        if (!selectedFiles) return;
         if (uploading) {
             event.preventDefault();
             return;
@@ -330,6 +354,13 @@ document.querySelectorAll('form[enctype="multipart/form-data"]').forEach((form, 
             if (contentType.includes('application/json')) {
                 try { response = JSON.parse(request.responseText); } catch { response = null; }
             }
+            if (request.status >= 200 && request.status < 300 && response?.redirect) {
+                status.textContent = 'Upload complete. Opening your booking confirmation...';
+                bar.style.width = '100%';
+                track.setAttribute('aria-valuenow', '100');
+                window.location.assign(response.redirect);
+                return;
+            }
             if (request.status >= 200 && request.status < 300 && !response?.errors) {
                 status.textContent = 'Upload complete. Refreshing...';
                 bar.style.width = '100%';
@@ -340,6 +371,19 @@ document.querySelectorAll('form[enctype="multipart/form-data"]').forEach((form, 
             const errors = response?.errors ? Object.values(response.errors).flat().join(' ') : '';
             status.textContent = request.status === 413 ? 'The selected images are too large. Choose smaller files.' : errors || response?.message || 'Upload failed. Check the image and try again.';
             feedback.classList.add('has-error');
+            if (response?.errors) {
+                const firstField = Object.keys(response.errors)[0];
+                const fieldName = firstField.split('.')[0];
+                form.dispatchEvent(new CustomEvent('form-invalid', { detail: fieldName }));
+                const field = form.querySelector('[name="' + CSS.escape(fieldName) + '"]')
+                    ?? form.querySelector('[name="' + CSS.escape(fieldName) + '[]"]');
+                field?.setAttribute('aria-invalid', 'true');
+                const formStatus = form.querySelector('[data-form-status]');
+                if (formStatus) {
+                    formStatus.textContent = status.textContent;
+                    formStatus.focus();
+                }
+            }
         });
         request.addEventListener('error', () => {
             status.textContent = 'The connection was interrupted. Please try uploading again.';

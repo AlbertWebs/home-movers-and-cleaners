@@ -17,10 +17,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class BookingController extends Controller
@@ -52,11 +54,13 @@ class BookingController extends Controller
             'preferred_date' => ['required', 'date_format:Y-m-d'],
             'preferred_time' => ['required', 'date_format:H:i'],
             'instructions' => ['nullable', 'string', 'max:3000'],
+            'quote_photos' => ['nullable', 'array', 'max:5'],
+            'quote_photos.*' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'pickup_location' => ['nullable', 'string', 'max:255'],
             'destination' => ['nullable', 'string', 'max:255'],
         ]);
 
-        [$booking, $created] = DB::transaction(function () use ($data, $schedule): array {
+        [$booking, $created] = DB::transaction(function () use ($data, $schedule, $request): array {
             $schedule->lock();
 
             $existing = Booking::query()->where('request_token', $data['request_token'])->first();
@@ -80,6 +84,9 @@ class BookingController extends Controller
             if (isset($data['price_package_id']) && ! $package) {
                 throw ValidationException::withMessages(['price_package_id' => 'Choose an available package for this service.']);
             }
+            if ($request->hasFile('quote_photos') && $package && $package->pricing_type !== 'quote') {
+                throw ValidationException::withMessages(['quote_photos' => 'Photos can be attached to quote requests. Choose Request a Quote to add photos.']);
+            }
 
             $date = CarbonImmutable::parse($data['preferred_date'], 'Africa/Nairobi');
             $available = $schedule->availability($service->id, $date, $date);
@@ -87,7 +94,7 @@ class BookingController extends Controller
                 throw ValidationException::withMessages(['preferred_time' => 'This time is no longer available. Choose another date or time.']);
             }
 
-            $booking = new Booking(array_diff_key($data, ['request_token' => true]));
+            $booking = new Booking(array_diff_key($data, ['request_token' => true, 'quote_photos' => true]));
             $booking->forceFill([
                 'request_token' => $data['request_token'],
                 'reference' => 'HMC-'.$schedule->now()->year.'-'.Str::upper(Str::random(10)),
@@ -102,8 +109,42 @@ class BookingController extends Controller
             return [$booking, true];
         }, attempts: 5);
 
+        $photosAdded = false;
+        if ($request->hasFile('quote_photos')) {
+            $isQuoteRequest = ! $booking->price_package_id || $booking->pricePackage?->pricing_type === 'quote';
+            if (! $isQuoteRequest) {
+                throw ValidationException::withMessages(['quote_photos' => 'Photos can be attached to quote requests. Choose Request a Quote to add photos.']);
+            }
+
+            if (empty($booking->quote_photos)) {
+                $storedPhotos = [];
+                try {
+                    $booking = DB::transaction(function () use ($booking, $request, &$storedPhotos): Booking {
+                        $lockedBooking = Booking::query()->lockForUpdate()->findOrFail($booking->getKey());
+                        if (empty($lockedBooking->quote_photos)) {
+                            foreach ($request->file('quote_photos') as $photo) {
+                                $path = $photo->store('booking-quotes/'.$lockedBooking->getKey(), 'local');
+                                if (! $path) {
+                                    throw new \RuntimeException('A quote photo could not be stored.');
+                                }
+                                $storedPhotos[] = $path;
+                            }
+                            $lockedBooking->forceFill(['quote_photos' => $storedPhotos])->save();
+                        }
+
+                        return $lockedBooking;
+                    }, attempts: 1);
+                    $photosAdded = count($storedPhotos) > 0;
+                } catch (Throwable $exception) {
+                    Storage::disk('local')->delete($storedPhotos);
+                    report($exception);
+                    throw ValidationException::withMessages(['quote_photos' => 'We could not save the selected photos. Please try again.']);
+                }
+            }
+        }
+
         $url = URL::temporarySignedRoute('booking.confirmation', now()->addDays(30), ['reference' => $booking->reference]);
-        if ($created) {
+        if ($created || $photosAdded) {
             $this->notifyBooking($booking, $url);
         }
 
@@ -120,6 +161,15 @@ class BookingController extends Controller
             ->header('Cache-Control', 'private, no-store')
             ->header('X-Robots-Tag', 'noindex, nofollow')
             ->header('Referrer-Policy', 'no-referrer');
+    }
+
+    public function quotePhoto(Booking $booking, int $photo): StreamedResponse
+    {
+        $path = $booking->quote_photos[$photo] ?? null;
+        abort_unless(is_string($path) && Str::startsWith($path, 'booking-quotes/'.$booking->getKey().'/'), 404);
+        abort_unless(Storage::disk('local')->exists($path), 404);
+
+        return Storage::disk('local')->download($path, basename($path), ['X-Content-Type-Options' => 'nosniff']);
     }
 
     public function enquiry(Request $request): RedirectResponse|JsonResponse

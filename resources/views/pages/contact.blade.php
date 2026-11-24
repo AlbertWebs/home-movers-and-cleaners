@@ -21,8 +21,8 @@
                 <span class="contact-method-copy"><small>Call us</small><strong>{{ $siteSettings['phone'] ?? '07999 48 186' }}</strong></span>
                 <b aria-hidden="true">›</b>
             </a>
-            @if($siteSettings['whatsapp'] ?? null)
-                <a class="contact-method" href="https://wa.me/{{ $siteSettings['whatsapp'] }}" target="_blank" rel="noopener">
+            @if($whatsappLink('Hello, I have a question about your services. Could you please assist me?'))
+                <a class="contact-method" href="{{ $whatsappLink('Hello, I have a question about your services. Could you please assist me?') }}" target="_blank" rel="noopener noreferrer">
                     <span class="contact-method-icon contact-method-icon-whatsapp"><img src="{{ asset('images/whatsapp-symbol.svg') }}" alt=""></span>
                     <span class="contact-method-copy"><small>WhatsApp</small><strong>Start a conversation</strong></span>
                     <b aria-hidden="true">›</b>

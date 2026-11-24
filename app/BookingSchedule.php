@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class BookingSchedule
 {
-    public const STATUSES = ['Pending', 'New', 'Contacted', 'Quoted', 'Confirmed', 'Scheduled', 'In Progress', 'Completed', 'Cancelled', 'Rejected'];
+    public const STATUSES = ['Pending', 'New', 'Contacted', 'Quoted', 'Expired', 'Confirmed', 'Scheduled', 'In Progress', 'Completed', 'Cancelled', 'Rejected'];
 
     public const HOURS = [
         '06:00' => '6 AM',
@@ -60,7 +60,7 @@ class BookingSchedule
         $duration = (int) ($rules['duration'] ?? $interval);
         $now = $this->now();
         $earliest = $now->addHours((int) $settings['notice']);
-        $bookings = Booking::query()->whereNotIn('status', ['Cancelled', 'Rejected'])
+        $bookings = Booking::query()->whereNotIn('status', ['Cancelled', 'Rejected', 'Expired'])
             ->where('preferred_date', '>=', $first->toDateString())
             ->where('preferred_date', '<', $last->addDay()->toDateString())
             ->whereNotNull('preferred_time')

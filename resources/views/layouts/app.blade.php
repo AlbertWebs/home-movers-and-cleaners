@@ -75,7 +75,7 @@
                 @if($siteSettings['instagram'] ?? null)<a class="utility-social" href="{{ $siteSettings['instagram'] }}" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle class="icon-fill" cx="17.7" cy="6.5" r="1.2"/></svg></a>@endif
                 @if($siteSettings['tiktok'] ?? null)<a class="utility-social" href="{{ $siteSettings['tiktok'] }}" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.2 3c.3 2.1 1.5 3.7 3.8 4.1v3.2a8.1 8.1 0 0 1-3.8-1.2v6.1a6.2 6.2 0 1 1-6.2-6.2c.4 0 .8 0 1.2.1v3.4a2.9 2.9 0 1 0 1.8 2.7V3z"/></svg></a>@endif
                 <span class="utility-divider" aria-hidden="true"></span>
-                @if($siteSettings['whatsapp'] ?? null)<a class="utility-whatsapp" href="https://wa.me/{{ $siteSettings['whatsapp'] }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 11.8a8.1 8.1 0 0 1-11.9 7.1L4 20l1.1-4.1a8.1 8.1 0 1 1 15.1-4.1zm-8.1-6.2a6.2 6.2 0 0 0-5.3 9.4l.3.5-.6 2.1 2.2-.6.5.3a6.2 6.2 0 1 0 2.9-11.7zm3.4 8.8c-.2-.1-1.2-.6-1.4-.7s-.3-.1-.4.1-.5.7-.7.8-.2.2-.4.1a5.1 5.1 0 0 1-1.7-1 6.2 6.2 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.4l.3-.4c.1-.1.1-.2.2-.3s0-.2 0-.3-.4-1-.6-1.3-.3-.3-.4-.3h-.4c-.1 0-.3.1-.5.2s-.7.7-.7 1.6.7 1.9.8 2c.1.1 1.4 2.2 3.5 3 .5.2.8.3 1.1.3.5.1.9.1 1.2.1.4-.1 1.2-.5 1.4-1s.2-.9.2-1-.2-.1-.4-.2z"/></svg> WhatsApp Us</a>@endif
+                @if($whatsappLink('Hello, I found your website and would like to learn more about your services.'))<a class="utility-whatsapp" href="{{ $whatsappLink('Hello, I found your website and would like to learn more about your services.') }}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 11.8a8.1 8.1 0 0 1-11.9 7.1L4 20l1.1-4.1a8.1 8.1 0 1 1 15.1-4.1zm-8.1-6.2a6.2 6.2 0 0 0-5.3 9.4l.3.5-.6 2.1 2.2-.6.5.3a6.2 6.2 0 1 0 2.9-11.7zm3.4 8.8c-.2-.1-1.2-.6-1.4-.7s-.3-.1-.4.1-.5.7-.7.8-.2.2-.4.1a5.1 5.1 0 0 1-1.7-1 6.2 6.2 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.4l.3-.4c.1-.1.1-.2.2-.3s0-.2 0-.3-.4-1-.6-1.3-.3-.3-.4-.3h-.4c-.1 0-.3.1-.5.2s-.7.7-.7 1.6.7 1.9.8 2c.1.1 1.4 2.2 3.5 3 .5.2.8.3 1.1.3.5.1.9.1 1.2.1.4-.1 1.2-.5 1.4-1s.2-.9.2-1-.2-.1-.4-.2z"/></svg> WhatsApp Us</a>@endif
             </div>
         </div>
     </div>
@@ -155,7 +155,7 @@
                     <a class="footer-contact-item" href="mailto:{{ $siteSettings['business_email'] }}"><span><img src="{{ asset('images/contact-email.svg') }}" alt=""></span>{{ $siteSettings['business_email'] }}</a>
                 @endif
                 <a class="footer-contact-item" href="{{ route('contact') }}"><span><img src="{{ asset('images/contact-location.svg') }}" alt=""></span>{{ $siteSettings['business_location'] ?? 'Nairobi, Kenya' }}</a>
-                <a class="footer-whatsapp" href="https://wa.me/{{ $siteSettings['whatsapp'] ?? '254799948186' }}"><img src="{{ asset('images/whatsapp-symbol.svg') }}" alt="">Chat on WhatsApp</a>
+                @if($whatsappLink('Hello, I found your website and would like to enquire about your services.'))<a class="footer-whatsapp" href="{{ $whatsappLink('Hello, I found your website and would like to enquire about your services.') }}" target="_blank" rel="noopener noreferrer"><img src="{{ asset('images/whatsapp-symbol.svg') }}" alt="">Chat on WhatsApp</a>@endif
             </div>
         </div>
         <div class="wrap footer-bottom">
