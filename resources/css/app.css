@@ -341,10 +341,15 @@ a:focus-visible,button:focus-visible{outline:3px solid #ff9a78;outline-offset:3p
 :root{--uniform-yellow:#f4bd26;--uniform-yellow-soft:#fff7df;--uniform-gold:#946000}
 ::selection{background:var(--uniform-yellow-soft);color:var(--navy-dark)}
 :where(a,button,input,select,textarea,summary):focus-visible{outline:2px solid var(--uniform-yellow);outline-offset:3px}
-.button:hover{box-shadow:0 0 0 3px var(--uniform-yellow-soft),0 7px 18px #9460001a}
-.hero-image-note>span{background:var(--uniform-yellow-soft);color:var(--uniform-gold)}
-.moving-scope-card li span{background:var(--uniform-yellow-soft);color:var(--uniform-gold)}
-.real-work-grid figure:hover,.moving-project-photos figure:hover,.gallery-grid figure:hover{border-color:#f0cf72;box-shadow:0 14px 34px #94600014}
+.button:hover{box-shadow:0 0 0 4px #f4bd2666,0 7px 18px #9460001a}
+.utility-tagline-underline{background:linear-gradient(90deg,var(--uniform-yellow) 0 38%,#ff7900 38% 100%)}
+.home-page .hero-kicker>span,.home-page .services-showcase-kicker>span{background:var(--uniform-yellow)}
+.hero-image-note>span{width:38px;height:38px;border:1px solid #e6b32b;background:var(--uniform-yellow);box-shadow:0 3px 10px #94600024;color:var(--navy-dark)}
+.home-page .service-showcase-card[href*="moving-services"] .service-showcase-icon{background:var(--uniform-yellow);box-shadow:0 8px 16px #94600030}
+.home-page .service-showcase-card[href*="moving-services"] .service-showcase-icon svg{stroke:var(--navy-dark)}
+.moving-scope-card{border-top:3px solid var(--uniform-yellow)}
+.moving-scope-card li span{background:#ffdc73;color:#584000}
+.real-work-grid figure:hover,.moving-project-photos figure:hover,.gallery-grid figure:hover{border-color:var(--uniform-yellow);box-shadow:0 14px 34px #94600020}
 .real-work-heading>.text-link:hover span,.moving-scope-gallery-link:hover span{color:var(--uniform-gold)}
 .footer-socials a:hover{border:0;background:transparent;filter:brightness(1.15)}
 .footer-socials img{display:block;width:100%;height:100%;object-fit:contain}
