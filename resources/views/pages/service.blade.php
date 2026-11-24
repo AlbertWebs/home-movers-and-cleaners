@@ -59,6 +59,38 @@
             <a class="detail-quote-link" href="{{ route('booking', ['service' => $service->id]) }}">Need a custom quote? <span aria-hidden="true">→</span></a>
         </aside>
     </div>
+    @if($service->slug === 'moving-services')
+        @php($movingScope = $defaults['scope'] ?? [])
+        <div class="wrap moving-scope">
+            <div class="moving-scope-heading">
+                <div class="eyebrow">WHAT YOUR MOVE INCLUDES</div>
+                <h2>A complete move, from packing to settling in</h2>
+                <p>Our end-to-end service is designed to make house and office relocations smoother. We handle your belongings with care and help you get comfortable in your new space.</p>
+            </div>
+            <div class="moving-scope-grid">
+                @foreach($movingScope as $scopeGroup)
+                    <article class="moving-scope-card">
+                        <h3>{{ $scopeGroup['title'] }}</h3>
+                        <ul>
+                            @foreach($scopeGroup['items'] as $item)
+                                <li><span aria-hidden="true">✓</span>{{ $item }}</li>
+                            @endforeach
+                        </ul>
+                    </article>
+                @endforeach
+            </div>
+            <p class="moving-scope-note">Tell us about your property, access and priorities when you request a quote. We’ll confirm the agreed work and price before the move.</p>
+            <div class="moving-project-photos" aria-label="Our moving and settling-in work">
+                @foreach(config('site_content.project_photos', []) as $photo)
+                    <figure>
+                        <img src="{{ asset($photo['path']) }}" alt="{{ $photo['alt_text'] }}" loading="lazy" decoding="async">
+                        <figcaption>{{ $photo['caption'] }}</figcaption>
+                    </figure>
+                @endforeach
+            </div>
+            <a class="moving-scope-gallery-link" href="{{ route('gallery') }}">See more of our work <span aria-hidden="true">→</span></a>
+        </div>
+    @endif
 </section>
 @if($faqItems)
     <section class="section soft-section"><div class="wrap legal-copy site-faq">

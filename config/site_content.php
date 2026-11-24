@@ -5,15 +5,46 @@ return [
         'moving-services' => [
             'image' => 'images/service-moving.webp',
             'icon' => 'images/service-moving.svg',
-            'benefits' => ['Residential and apartment moves', 'Packing and careful handling', 'Planning for access and bulky items'],
+            'benefits' => ['House and office relocations', 'Fragile-item packing and furniture protection', 'Loading, transport and offloading', 'Unpacking and home setup'],
+            'scope' => [
+                [
+                    'title' => 'Packing and protection',
+                    'items' => [
+                        'Professional packing of fragile items using plastic boxes and protective wrappers',
+                        'Furniture protection with quality shrink film',
+                        'Safe removal and installation of TVs and chandeliers',
+                    ],
+                ],
+                [
+                    'title' => 'Moving day',
+                    'items' => [
+                        'Loading, transportation and offloading of your belongings',
+                        'Careful handling of household items throughout the move',
+                    ],
+                ],
+                [
+                    'title' => 'Unpacking and settling in',
+                    'items' => [
+                        'Light cleaning of your new home before arrangement',
+                        'Unpacking and proper arrangement of household items',
+                        'Kitchen setup and appliance connection',
+                        'Folding and arranging clothes neatly in wardrobes',
+                        'Proper setup and arrangement of seats and furniture',
+                    ],
+                ],
+            ],
             'content' => <<<'MARKDOWN'
-## Plan your home move
+## House and office relocations
 
-Tell us about your current home, your destination and the size of the move. For apartments, include floor numbers, lift access, parking and any building rules that could affect loading.
+Our team coordinates your move from packing and protection through transport, offloading and settling into your new space. We handle household and office belongings with care and agree the work with you before moving day.
 
-## Packing and moving day
+## A smoother moving day
 
-Let us know which items you would like help packing or handling. Flag fragile pieces, large furniture and anything that may need to be taken apart before loading. We will discuss the move and confirm the agreed scope and charges before the appointment.
+Tell us your collection and destination addresses, the property size, access details and preferred date. For apartments or offices, include floor numbers, lift access, parking, loading restrictions and any building rules. Point out fragile items, large furniture, TVs, chandeliers and anything that needs special attention so we can plan ahead.
+
+## Settling into your new home
+
+After offloading, we help unpack and arrange household items, set up furniture and seats, organise clothes in wardrobes, and prepare the kitchen. Light cleaning of the new home is included before we begin arranging your belongings. Share any room-by-room priorities when requesting your booking.
 MARKDOWN,
             'faqs' => [
                 ['question' => 'How do I choose a moving package?', 'answer' => 'Start with your home size. Share extra items, difficult access or multiple stops so the team can confirm a suitable quotation.'],
@@ -78,6 +109,15 @@ MARKDOWN,
                 ['question' => 'Are appliances and windows included?', 'answer' => 'Describe any appliance or window cleaning you need. The team will confirm what is included in your agreed scope.'],
             ],
         ],
+    ],
+    'project_photos' => [
+        ['path' => 'images/projects/team-packing-sofa.jpeg', 'caption' => 'The team carefully wraps and packs a sofa for a move.', 'alt_text' => 'Two Home Movers and Cleaners team members wrapping a sofa in a living room.', 'category' => 'Moving'],
+        ['path' => 'images/projects/team-preparing-bed.jpeg', 'caption' => 'Preparing a bed frame for safe transport.', 'alt_text' => 'The moving team carefully disassembling a bed frame in a bedroom.', 'category' => 'Moving'],
+        ['path' => 'images/projects/team-carrying-wrapped-chair.jpeg', 'caption' => 'A protected armchair carried carefully through a doorway.', 'alt_text' => 'A mover carrying a wrapped armchair through a doorway.', 'category' => 'Moving'],
+        ['path' => 'images/projects/team-moving-apartment.jpeg', 'caption' => 'Our crew coordinating a move at an apartment building.', 'alt_text' => 'A Home Movers and Cleaners team member coordinating a move at an apartment building.', 'category' => 'Moving'],
+        ['path' => 'images/projects/team-loading-truck.jpeg', 'caption' => 'Loading furniture and household belongings for transport.', 'alt_text' => 'A Home Movers and Cleaners team member loading belongings into a moving truck.', 'category' => 'Moving'],
+        ['path' => 'images/projects/move-in-bedroom-cleaning.jpeg', 'caption' => 'A bedroom floor cleaned as part of move-in preparation.', 'alt_text' => 'A Home Movers and Cleaners team member mopping a bedroom floor.', 'category' => 'House Deep Cleaning'],
+        ['path' => 'images/projects/team-arranging-wardrobe.jpeg', 'caption' => 'Helping arrange clothes neatly in a wardrobe after a move.', 'alt_text' => 'A Home Movers and Cleaners team member arranging folded clothes in a wardrobe.', 'category' => 'Moving'],
     ],
     'pages' => [
         'about' => [

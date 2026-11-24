@@ -32,7 +32,7 @@ From moving your belongings safely to keeping your spaces spotless, we provide r
 @endif</p><a class="button" href="{{ route('services') }}">View All Services <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a><svg class="services-showcase-watermark" viewBox="0 0 160 160" aria-hidden="true"><path d="m18 74 62-54 62 54M34 64v77h92V64M65 141V94h30v47M57 76h16v16H57zm31 0h16v16H88z"/></svg></div><div class="services-showcase-grid">
 @if($card = $services->firstWhere('slug', 'moving-services'))
 <a class="service-showcase-card" href="{{ route('service', 'moving-services') }}"><div class="service-showcase-photo"><img src="{{ asset($card->photo() ?? 'images/service-moving.webp') }}" alt="Two movers carefully carrying a sofa" loading="lazy"><span class="service-showcase-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M5 12h25v23H5zM30 20h8l6 7v8H30M12 40a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm26 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg></span></div><div class="service-showcase-content"><h3>{{ str_replace(' Services', '', $card->name) }}</h3><p>@if(isset($homeCopy['services.moving']) && $homeCopy['services.moving'] !== config('site_homepage.services.moving')){{ $homeCopy['services.moving'] }}@else
-Safe, efficient and hassle-free relocation for homes and offices.
+ From careful packing and furniture protection to transport, unpacking and room-by-room setup.
 @endif</p><span class="service-showcase-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></span></div></a>
 @endif
 @if($card = $services->firstWhere('slug', 'fumigation-services'))
@@ -51,6 +51,27 @@ A thorough, top-to-bottom clean for a fresh and healthy home.
 @endif</p><span class="service-showcase-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></span></div></a>
 @endif
 </div></div></div></section>
+@php($realProjectPhotos = collect(config('site_content.project_photos', []))->only([0, 4, 5])->values())
+<section class="real-work-section" aria-labelledby="real-work-heading">
+    <div class="wrap">
+        <div class="real-work-heading">
+            <div>
+                <div class="eyebrow">REAL WORK, REAL CARE</div>
+                <h2 id="real-work-heading">See our team in action</h2>
+                <p>From protecting furniture and loading the truck to cleaning and setting up a new home, our team helps with the details at every step.</p>
+            </div>
+            <a class="text-link" href="{{ route('gallery') }}">Browse project photos <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="real-work-grid">
+            @foreach($realProjectPhotos as $photo)
+                <figure>
+                    <img src="{{ asset($photo['path']) }}" alt="{{ $photo['alt_text'] }}" loading="lazy" decoding="async">
+                    <figcaption>{{ $photo['caption'] }}</figcaption>
+                </figure>
+            @endforeach
+        </div>
+    </div>
+</section>
 @break
 @case('about')
 <section class="section about-inspired"><div class="wrap story-grid"><div class="story-copy"><div class="about-kicker"><span aria-hidden="true"></span>@if(isset($homeCopy['about.eyebrow']) && $homeCopy['about.eyebrow'] !== config('site_homepage.about.eyebrow')){{ $homeCopy['about.eyebrow'] }}@else

@@ -23,7 +23,10 @@ class PublicSiteController extends Controller
 
     public function gallery(): View
     {
-        return view('pages.gallery', ['galleryItems' => GalleryItem::where('is_published', true)->orderBy('sort_order')->latest()->get()]);
+        return view('pages.gallery', [
+            'featuredPhotos' => config('site_content.project_photos', []),
+            'galleryItems' => GalleryItem::where('is_published', true)->orderBy('sort_order')->latest()->get(),
+        ]);
     }
 
     public function services(): View

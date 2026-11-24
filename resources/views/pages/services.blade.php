@@ -48,7 +48,7 @@
                             @endif
                             <div>
                                 <h2>{{ $service->name }}</h2>
-                                <p>{{ $service->summary }}</p>
+                                <p>{{ $service->slug === 'moving-services' ? 'End-to-end house and office moves, from careful packing and protected transport to unpacking and home setup.' : $service->summary }}</p>
                             </div>
                         </div>
                         @if($serviceBenefits)
