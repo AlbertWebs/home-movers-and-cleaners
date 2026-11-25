@@ -14,8 +14,9 @@ class BookingSchedule
     public const HOURS = [
         '06:00' => '6 AM',
         '07:00' => '7 AM',
+        '08:00' => '8 AM',
         '11:00' => '11 AM',
-        '12:00' => '12 noon',
+        '12:00' => '12 PM',
         '13:00' => '1 PM',
         '14:00' => '2 PM',
         '15:00' => '3 PM',
@@ -24,7 +25,7 @@ class BookingSchedule
     public const DEFAULTS = [
         'enabled' => true,
         'weekdays' => [1, 2, 3, 4, 5, 6],
-        'hours' => ['06:00', '07:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
+        'hours' => ['06:00', '07:00', '08:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
         'interval' => 60,
         'capacity' => 1,
         'notice' => 24,
@@ -40,6 +41,10 @@ class BookingSchedule
     public function settings(): array
     {
         $stored = json_decode(SiteSetting::query()->where('key', 'booking_schedule')->value('value') ?? '', true);
+
+        if (is_array($stored) && ($stored['hours'] ?? null) === ['06:00', '07:00', '11:00', '12:00', '13:00', '14:00', '15:00']) {
+            $stored['hours'] = self::DEFAULTS['hours'];
+        }
 
         return array_replace(self::DEFAULTS, is_array($stored) ? $stored : []);
     }

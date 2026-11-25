@@ -91,11 +91,13 @@
             </button>
 
             <nav id="site-nav" class="main-nav" aria-label="Primary navigation">
-                <a class="{{ request()->routeIs('home') ? 'is-active' : '' }}" href="{{ route('home') }}">Home</a>
-                <a class="{{ request()->routeIs('about') ? 'is-active' : '' }}" href="{{ route('about') }}">About Us</a>
-                <a class="{{ request()->routeIs('services', 'service') ? 'is-active' : '' }}" href="{{ route('services') }}">Services <span class="nav-chevron" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg></span></a>
-                <a class="{{ request()->routeIs('pricing') ? 'is-active' : '' }}" href="{{ route('pricing') }}">Pricing</a>
-                <a class="{{ request()->routeIs('contact') ? 'is-active' : '' }}" href="{{ route('contact') }}">Contact</a>
+                <div class="main-nav-links">
+                    <a class="{{ request()->routeIs('home') ? 'is-active' : '' }}" href="{{ route('home') }}">Home</a>
+                    <a class="{{ request()->routeIs('about') ? 'is-active' : '' }}" href="{{ route('about') }}">About Us</a>
+                    <a class="{{ request()->routeIs('services', 'service') ? 'is-active' : '' }}" href="{{ route('services') }}">Services <span class="nav-chevron" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg></span></a>
+                    <a class="{{ request()->routeIs('pricing') ? 'is-active' : '' }}" href="{{ route('pricing') }}">Pricing</a>
+                    <a class="{{ request()->routeIs('contact') ? 'is-active' : '' }}" href="{{ route('contact') }}">Contact</a>
+                </div>
                 <a class="nav-phone" href="tel:{{ preg_replace('/\s+/', '', $siteSettings['phone'] ?? '0799948186') }}">
                     <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 2.8 9.4 2c.7-.2 1.4.2 1.6.9l1.1 3.4c.2.6 0 1.2-.5 1.6L9.8 9a14 14 0 0 0 5.2 5.2l1.1-1.8c.3-.5 1-.7 1.6-.5l3.4 1.1c.7.2 1.1.9.9 1.6l-.8 2.8c-.2.7-.8 1.1-1.5 1.1A17.2 17.2 0 0 1 5.5 4.3c0-.7.4-1.3 1.1-1.5z"/></svg></span>{{ $siteSettings['phone'] ?? '07999 48 186' }}
                 </a>

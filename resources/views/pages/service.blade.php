@@ -41,6 +41,21 @@
         @if($service->photo())<div class="site-content-photo"><img src="{{ asset($service->photo()) }}" alt="{{ $service->name }} service in Nairobi" fetchpriority="high"></div>@endif
     </div>
 </section>
+@if($service->slug === 'moving-services')
+    <section class="moving-hours" aria-labelledby="moving-hours-title">
+        <div class="wrap moving-hours-inner">
+            <div class="moving-hours-heading">
+                <span class="eyebrow">PLAN YOUR MOVE</span>
+                <h2 id="moving-hours-title">Moving hours</h2>
+            </div>
+            <ul class="moving-hours-list">
+                @foreach(\App\BookingSchedule::HOURS as $label)
+                    <li>{{ $label }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </section>
+@endif
 <section class="section section-white service-detail-content">
     <div class="wrap detail-grid">
         <div class="site-prose">
