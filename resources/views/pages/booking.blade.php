@@ -92,6 +92,18 @@
                     <div class="booking-calendar-grid" data-calendar-grid></div>
                     <p data-calendar-message role="status"></p>
                 </div>
+                <div class="booking-hours-panel" aria-label="Working hours">
+                    <div class="booking-hours-heading">
+                        <strong>Working hours</strong>
+                        <span>Available start times in Nairobi time</span>
+                    </div>
+                    <ul class="booking-hours-list">
+                        @foreach($workingHours as $label)
+                            <li>{{ $label }}</li>
+                        @endforeach
+                    </ul>
+                    <p>Choose a date to see which times are available.</p>
+                </div>
                 <label data-date-field>Preferred date
                     <input type="date" name="preferred_date" min="{{ now('Africa/Nairobi')->toDateString() }}" value="{{ old('preferred_date') }}" required>
                 </label>

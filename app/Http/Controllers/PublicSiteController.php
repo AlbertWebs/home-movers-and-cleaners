@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BookingSchedule;
 use App\Models\BlogArticle;
 use App\Models\ContentPage;
 use App\Models\GalleryItem;
@@ -46,9 +47,16 @@ class PublicSiteController extends Controller
         return view('pages.pricing', ['services' => Service::with(['packages' => fn ($query) => $query->where('is_active', true)])->where('is_active', true)->orderBy('sort_order')->get()]);
     }
 
-    public function booking(): View
+    public function booking(BookingSchedule $schedule): View
     {
-        return view('pages.booking', ['services' => Service::with(['packages' => fn ($query) => $query->where('is_active', true)])->where('is_active', true)->orderBy('sort_order')->get()]);
+        $settings = $schedule->settings();
+        $configuredHours = is_array($settings['hours'] ?? null) ? $settings['hours'] : [];
+        $workingHours = collect(BookingSchedule::HOURS)->only($configuredHours)->all();
+
+        return view('pages.booking', [
+            'services' => Service::with(['packages' => fn ($query) => $query->where('is_active', true)])->where('is_active', true)->orderBy('sort_order')->get(),
+            'workingHours' => $workingHours,
+        ]);
     }
 
     public function contact(): View

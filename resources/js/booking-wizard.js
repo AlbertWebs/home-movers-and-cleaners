@@ -119,7 +119,13 @@ export function initBookingWizard(form) {
     function renderTimes(preferred = time.value) {
         const slots = dates[date.value] ?? [];
         time.replaceChildren(new Option(slots.length ? 'Select a time' : 'Choose an available date', ''));
-        for (const slot of slots) time.add(new Option(slot, slot));
+        for (const slot of slots) {
+            const [hour, minute] = slot.split(':').map(Number);
+            const period = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            const label = minute === 0 ? `${displayHour} ${period}` : `${displayHour}:${String(minute).padStart(2, '0')} ${period}`;
+            time.add(new Option(label, slot));
+        }
         time.value = slots.includes(preferred) ? preferred : '';
     }
 

@@ -3486,3 +3486,36 @@ body.about-page .about-intro.about-hero::before { display: none; }
     .moving-hours-inner { align-items: flex-start; flex-direction: column; gap: 16px; }
     .moving-hours-list { justify-content: flex-start; }
 }
+.booking-hours-panel { display: grid; gap: .75rem; margin-bottom: 1rem; padding: 1rem 1.1rem; border: 1px solid #e1e6ef; border-radius: 12px; background: #f7f9fc; }
+.booking-hours-heading { display: grid; gap: .1rem; }
+.booking-hours-heading strong { color: var(--navy-dark); font-size: .95rem; }
+.booking-hours-heading span,.booking-hours-panel > p { color: #5a667b; font-size: .8rem; }
+.booking-hours-list { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0; padding: 0; list-style: none; }
+.booking-hours-list li { padding: .35rem .65rem; border: 1px solid #e1e5ee; border-radius: 999px; background: #fff; color: #25365b; font-size: .8rem; font-weight: 800; }
+.booking-hours-panel > p { margin: 0; }
+/* Compact desktop header with the five primary links centered in the menu row. */
+.site-header { height: 72px; }
+.site-header .nav-row { position: relative; }
+.site-header .brand img { width: 140px; height: 60px; }
+.site-header .main-nav { justify-content: flex-end; gap: 12px; }
+.site-header .main-nav-links { position: absolute; top: 50%; left: 50%; flex: 0 0 auto; gap: clamp(14px, 1.5vw, 26px); transform: translate(-50%, -50%); white-space: nowrap; }
+.site-header .main-nav-links > a.is-active:after { bottom: -15px; }
+.site-header .main-nav .nav-phone { padding: 7px 12px; font-size: 16px; }
+.site-header .main-nav .nav-phone > span { width: 24px; height: 24px; flex-basis: 24px; }
+.site-header .main-nav .nav-phone > span svg { width: 22px; height: 22px; }
+.site-header .main-nav .button-small { min-height: 48px; gap: 9px; padding: 8px 14px; font-size: 15px; }
+.site-header .main-nav .nav-booking-icon svg { width: 22px; height: 22px; }
+.site-header .main-nav .nav-booking-arrow svg { width: 18px; height: 18px; }
+@media (max-width: 1100px) and (min-width: 981px) {
+    .site-header .menu-toggle { display: inline-flex; align-items: center; gap: 9px; margin-left: auto; padding: 10px 13px; }
+    .site-header .main-nav { display: none; position: absolute; top: 72px; right: 0; left: 0; z-index: 30; padding: 14px 24px 22px; border-bottom: 1px solid var(--line); background: #fff; box-shadow: 0 15px 25px #1d28520c; flex-direction: column; align-items: stretch; gap: 0; }
+    .site-header .main-nav.open { display: flex; }
+    .site-header .main-nav-links { position: static; flex-direction: column; align-items: stretch; gap: 0; width: 100%; transform: none; }
+    .site-header .main-nav-links > a { padding: 12px 3px; border-bottom: 1px solid #f0f1f5; }
+    .site-header .main-nav-links > a.is-active:after { right: auto; bottom: 5px; left: 3px; width: 46px; height: 2px; }
+    .site-header .main-nav .nav-phone { justify-content: flex-start; margin: 12px 0 0; padding: 10px 12px; border: 1px solid #ffdfd3; }
+    .site-header .main-nav .button-small { justify-content: center; margin-top: 12px; }
+}
+@media (max-width: 980px) {
+    .site-header .main-nav-links { position: static; flex: 0 0 auto; width: 100%; transform: none; }
+}

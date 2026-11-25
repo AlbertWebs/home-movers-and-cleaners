@@ -83,7 +83,6 @@
         <div class="wrap nav-row">
             <a href="{{ route('home') }}" class="brand" aria-label="{{ $siteSettings['company_name'] ?? 'Home Movers and Cleaners' }} home">
                 <img src="{{ asset($siteSettings['primary_logo'] ?? 'images/brand-logo.png') }}" alt="Home Movers and Cleaners logo">
-                <span class="brand-copy"><strong>HOME MOVERS</strong><small>AND CLEANERS</small></span>
             </a>
 
             <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle site navigation">
