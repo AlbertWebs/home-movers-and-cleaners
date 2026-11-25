@@ -38,7 +38,7 @@
             <p>{{ $service->summary }}</p>
             <a class="button" href="{{ route('booking', ['service' => $service->id]) }}">Request this service</a>
         </div>
-        @if($service->photo())<div class="site-content-photo"><img src="{{ asset($service->photo()) }}" alt="{{ $service->name }} service in Nairobi" fetchpriority="high"></div>@endif
+        @if($service->photo())<div class="site-content-photo"><img src="{{ asset($service->photo()) }}?v=057c068" alt="{{ $service->name }} service in Nairobi" fetchpriority="high"></div>@endif
     </div>
 </section>
 @if($service->slug === 'moving-services')

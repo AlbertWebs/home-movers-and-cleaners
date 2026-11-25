@@ -39,7 +39,7 @@
                 @endphp
                 <article class="catalog-card">
                     @if($servicePhoto)
-                        <img class="catalog-photo" src="{{ asset($servicePhoto) }}" alt="{{ $service->name }}" loading="lazy">
+                        <img class="catalog-photo" src="{{ asset($servicePhoto) }}?v=057c068" alt="{{ $service->name }}" loading="lazy">
                     @endif
                     <div class="catalog-card-body">
                         <div class="services-card-heading">

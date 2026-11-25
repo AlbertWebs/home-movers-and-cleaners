@@ -53,7 +53,7 @@
                         <div class="about-service-photo" aria-hidden="true">
                             @php($aboutServicePhoto = $aboutServiceImages[$service->slug] ?? $service->photo())
                             @if($aboutServicePhoto)
-                                <img src="{{ asset($aboutServicePhoto) }}" alt="" loading="lazy">
+                                <img src="{{ asset($aboutServicePhoto) }}?v=057c068" alt="" loading="lazy">
                             @endif
                         </div>
                         <div class="about-service-card-copy">

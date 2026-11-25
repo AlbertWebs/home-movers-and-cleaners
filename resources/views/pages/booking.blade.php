@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="booking-hero-visual" aria-hidden="true">
-            <img src="{{ asset('images/moving-hero.webp') }}" alt="" fetchpriority="high">
+            <img src="{{ asset('images/moving-hero.webp') }}?v=057c068" alt="" fetchpriority="high">
             <svg class="booking-house-mark" viewBox="0 0 120 120"><path d="m12 53 48-42 48 42M25 48v60h70V48M48 108V75h24v33"/></svg>
         </div>
     </div>

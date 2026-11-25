@@ -2351,7 +2351,7 @@ body.about-page .about-intro.about-hero::before { display: none; }
     right: 18%;
     width: 360px;
     height: 132px;
-    background: url('/images/contact-moving-truck.webp') center 55% / contain no-repeat;
+    background: url('/images/contact-moving-truck.webp?v=057c068') center 55% / contain no-repeat;
     content: '';
     pointer-events: none;
 }

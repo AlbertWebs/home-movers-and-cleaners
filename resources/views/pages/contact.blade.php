@@ -43,7 +43,7 @@
                 <div class="contact-hours"><span>OPERATING HOURS</span><strong>{{ $siteSettings['operating_hours'] }}</strong><small>East Africa Time (Nairobi)</small></div>
             @endif
             <a class="button contact-booking-link" href="{{ route('booking') }}"><span aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-13 4h2m4 0h2m-8 4h2m4 0h2"/></svg></span>Request a booking <b aria-hidden="true">›</b></a>
-            <div class="contact-illustration" aria-hidden="true"><img src="{{ asset('images/contact-moving-truck.webp') }}" alt="" loading="lazy"></div>
+            <div class="contact-illustration" aria-hidden="true"><img src="{{ asset('images/contact-moving-truck.webp') }}?v=057c068" alt="" loading="lazy"></div>
         </div>
         <form class="form-card contact-form-card" method="post" action="{{ route('contact.store') }}" data-ajax-form>
             @csrf

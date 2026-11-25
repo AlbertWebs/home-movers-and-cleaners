@@ -31,11 +31,11 @@
         <meta property="og:title" content="{{ $ogTitle }}">
         <meta property="og:description" content="{{ $ogDescription }}">
         <meta property="og:url" content="{{ $canonical }}">
-        <meta property="og:image" content="{{ $socialImage }}">
+        <meta property="og:image" content="{{ $socialImage }}?v=057c068">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ $ogTitle }}">
         <meta name="twitter:description" content="{{ $ogDescription }}">
-        <meta name="twitter:image" content="{{ $socialImage }}">
+        <meta name="twitter:image" content="{{ $socialImage }}?v=057c068">
     @endunless
     @if($siteSettings['google_site_verification'] ?? null)<meta name="google-site-verification" content="{{ $siteSettings['google_site_verification'] }}">@endif
     @if(request()->routeIs('home', 'contact'))
