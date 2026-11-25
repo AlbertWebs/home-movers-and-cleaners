@@ -1046,6 +1046,7 @@ a:focus-visible,button:focus-visible{outline:3px solid #f6d481;outline-offset:3p
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .staff-role-form { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
 .staff-role-form select { min-width: 160px; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: 7px; background: #fff; }
+
 /* Service catalog and content pages */
 .catalog-grid, .admin-content-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2.25rem); }
 .catalog-card { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: #fff; box-shadow: 0 10px 28px #1325570e; }
@@ -3521,3 +3522,45 @@ body.about-page .about-intro.about-hero::before { display: none; }
 @media (max-width: 980px) {
     .site-header .main-nav-links { position: static; flex: 0 0 auto; width: 100%; transform: none; }
 }
+
+/* Final contrast overrides for homepage content and interactive states. */
+.home-page { --home-hover-border: #a87700; }
+.home-page .hero-image-note small { color: #59677d; }
+.home-page .hero-benefits span { color: var(--navy-dark); }
+.home-page .about-benefits svg,
+.home-page .details-icon svg { stroke: var(--navy-dark); }
+.home-page .service-showcase-icon { color: var(--navy-dark); }
+.home-page .service-showcase-icon svg { stroke: var(--navy-dark); }
+.home-page .service-showcase-card:hover .service-showcase-arrow,
+.home-page .service-photo-card:hover .service-card-arrow { color: var(--navy-dark); }
+.home-page .steps-grid .steps-number { color: var(--navy-dark); }
+.home-page .steps-connector { color: #66758b; }
+.home-page .steps-action .button,
+.home-page .steps-action .button:hover { color: #fff; }
+.home-page .fresh-start-kicker { color: #f4bd26; }
+.home-page .fresh-start-actions .fresh-start-book,
+.home-page .fresh-start-actions .fresh-start-book:hover { color: var(--navy-dark); }
+.home-page :is(.details-card, .steps-card):hover { background-color: #fffaf0; }
+.home-page :is(.utility-location, .utility-whatsapp):hover,
+.home-page .footer-bottom a:hover,
+.home-page .utility-social:hover { color: #f4bd26; }
+.home-page .footer-column > a:hover,
+.home-page .footer-inspired .footer-grid > div.footer-column > a:hover,
+.home-page .footer-inspired .footer-bottom a:hover,
+.home-page .footer-credit a:hover { color: #f4bd26; }
+.nav-phone > span,
+.footer-contact-item > span,
+.analytics-consent button:first-of-type { color: var(--navy-dark); }
+.service-photo-card:hover .service-card-arrow { color: var(--navy-dark); }
+.about-contact-link:hover,
+.about-contact-link:hover svg,
+.about-contact-link:hover span,
+.about-service-link:hover .about-service-icon,
+.about-service-link:focus-visible .about-service-icon { color: var(--navy-dark); }
+.about-contact-link:hover svg { fill: var(--navy-dark); }
+.back-to-top:not([hidden]) { background: #f4bd26; color: var(--navy-dark); }
+.back-to-top:hover { background: #d6a430; color: var(--navy-dark); }
+.footer-column > a:hover,
+.footer-inspired .footer-grid > div.footer-column > a:hover,
+.footer-inspired .footer-bottom a:hover,
+.footer-credit a:hover { color: #f4bd26; }
