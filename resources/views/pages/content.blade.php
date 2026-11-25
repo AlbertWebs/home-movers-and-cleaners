@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="about-team-photo">
-                <img src="{{ asset($aboutServiceImages['moving-services']) }}" alt="Professional movers carrying a wrapped sofa beside their truck" fetchpriority="high">
+                <img src="{{ asset($aboutServiceImages['moving-services']) }}?v=057c068" alt="Professional movers carrying a wrapped sofa beside their truck" fetchpriority="high">
                 <div class="about-hero-badge">
                     <span class="about-hero-badge-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 20 6v5.4c0 5-3.3 8.4-8 10.1-4.7-1.7-8-5.1-8-10.1V6l8-3.5Z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg></span>
                     <span><strong>Trusted moving and cleaning team</strong><small>Here to make your move easier</small></span>
