@@ -18,7 +18,7 @@ HOME MOVERS AND CLEANERS
     <div><span aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-2a6 6 0 0 1 12 0v2H3Zm12-5a5 5 0 0 1 6 5h-4"/></svg></span><strong>Experienced<br>team</strong></div>
     <div><span aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><strong>On-time<br>service</strong></div>
     <div><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 2.1 5.8L20 11l-5.9 2.2L12 19l-2.1-5.8L4 11l5.9-2.2L12 3Z"/><path d="m19 16 .9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16Z"/></svg></span><strong>Clean, safe<br>&amp; hygienic</strong></div>
-</div><div class="hero-actions"><a class="button" href="{{ route('booking') }}"><span aria-hidden="true">▦</span> Book a service <span aria-hidden="true">›</span></a><a class="button button-outline hero-explore-button" href="{{ route('services') }}"><span aria-hidden="true">▦</span> Explore our services</a></div></div><div class="hero-visual"><img src="{{ asset($homeImages['hero'] ?? 'images/moving-hero.webp') }}" width="1536" height="1024" alt="A mover carrying a box toward a new home, with a moving truck and teammate behind him" fetchpriority="high"><div class="hero-image-note"><span>✓</span><div><strong>@if(isset($homeCopy['hero.badge']) && $homeCopy['hero.badge'] !== config('site_homepage.hero.badge')){{ $homeCopy['hero.badge'] }}@else
+</div><div class="hero-actions"><a class="button" href="{{ route('booking') }}"><span aria-hidden="true">▦</span> Book a service <span aria-hidden="true">›</span></a><a class="button button-outline hero-explore-button" href="{{ route('services') }}"><span aria-hidden="true">▦</span> Explore our services</a></div></div><div class="hero-visual"><img src="{{ asset($homeImages['hero'] ?? 'images/moving-hero.webp') }}" width="1672" height="941" alt="A mover carrying a box toward a new home, with a moving truck and teammate behind him" fetchpriority="high"><div class="hero-image-note"><span>✓</span><div><strong>@if(isset($homeCopy['hero.badge']) && $homeCopy['hero.badge'] !== config('site_homepage.hero.badge')){{ $homeCopy['hero.badge'] }}@else
 Trusted moving &amp; cleaning partner
 @endif</strong><small>Here to make your move easier</small></div></div></div></div></section>
 @break
@@ -102,7 +102,7 @@ Life moves fast. Our moving and cleaning services are here to make the process s
         </svg>
         <strong>Experienced<br>Team</strong>
     </div>
-</div><div class="about-actions"><a class="button" href="{{ route('booking') }}">Book a service <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a><a class="button button-outline" href="{{ in_array('steps', $homeSettings['order'] ?? array_keys(config('site_homepage')), true) ? route('home').'#how-it-works' : route('booking') }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/></svg>See how it works</a></div></div><div class="story-photo"><img src="{{ isset($homeImages['about']) ? asset($homeImages['about']) : 'images/fresh-start-living-room.webp' }}" alt="Sunlit living room with a comfortable sofa and house plants" loading="lazy"></div></div></section>
+</div><div class="about-actions"><a class="button" href="{{ route('booking') }}">Book a service <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a><a class="button button-outline" href="{{ in_array('steps', $homeSettings['order'] ?? array_keys(config('site_homepage')), true) ? route('home').'#how-it-works' : route('booking') }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/></svg>See how it works</a></div></div><div class="story-photo"><img src="{{ isset($homeImages['about']) ? asset($homeImages['about']) : 'images/fresh-start-living-room.webp' }}" alt="Two movers in yellow uniforms arranging a sofa and moving boxes in a bright living room" loading="lazy"></div></div></section>
 @break
 @case('details')
 <section class="details-inspired">
@@ -190,7 +190,7 @@ Our trained and vetted team arrives on time, ready to help.
             </article>
             <span class="steps-connector" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M5 24h34M25 10l14 14-14 14"/></svg></span>
             <article class="steps-card">
-                <div class="steps-card-visual"><img src="{{ isset($homeImages['steps_result']) ? asset($homeImages['steps_result']) : 'images/service-house-cleaning.webp' }}" alt="A clean, comfortable living room ready to enjoy" loading="lazy"></div>
+                <div class="steps-card-visual"><img src="{{ isset($homeImages['steps_result']) ? asset($homeImages['steps_result']) : 'images/service-house-cleaning.webp' }}" alt="A cleaner in a yellow uniform mopping a bright living room floor" loading="lazy"></div>
                 <span class="steps-number">3</span>
                 <h3>@if(isset($homeCopy['steps.card_three_title']) && $homeCopy['steps.card_three_title'] !== config('site_homepage.steps.card_three_title')){{ $homeCopy['steps.card_three_title'] }}@else
 Enjoy the Results
