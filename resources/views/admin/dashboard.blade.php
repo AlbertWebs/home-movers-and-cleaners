@@ -32,7 +32,7 @@
                 $chartPoints = collect($monthlyTrend)->map(fn ($month, $index) => ($index * $chartStep + 20).','. (140 - ($month['count'] / $chartMax * 108)))->implode(' ');
             @endphp
             <svg class="dashboard-line-chart" viewBox="0 0 600 180" preserveAspectRatio="none" aria-hidden="true">
-                <defs><linearGradient id="booking-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ff7900" stop-opacity=".24"/><stop offset="1" stop-color="#ff7900" stop-opacity="0"/></linearGradient></defs>
+                <defs><linearGradient id="booking-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#eed322" stop-opacity=".24"/><stop offset="1" stop-color="#eed322" stop-opacity="0"/></linearGradient></defs>
                 @foreach([0, 1, 2, 3] as $gridLine)
                     <line x1="20" x2="580" y1="{{ 32 + ($gridLine * 36) }}" y2="{{ 32 + ($gridLine * 36) }}" />
                     <text x="0" y="{{ 36 + ($gridLine * 36) }}">{{ max(0, $chartMax - $gridLine) }}</text>
@@ -52,7 +52,7 @@
         <div class="panel-head"><div><h2><span class="dashboard-panel-icon" aria-hidden="true">⟳</span> Bookings by service</h2><p>Requests in the selected period</p></div></div>
         @php
             $serviceTotal = (int) $serviceBreakdown->sum('bookings_count');
-            $serviceColors = ['#ff7900', '#8ec5ff', '#4cc878', '#a45cff', '#f05b45'];
+            $serviceColors = ['#eed322', '#8ec5ff', '#4cc878', '#a45cff', '#e6b460'];
             $serviceOffset = 0;
             $serviceGradient = [];
             foreach ($serviceBreakdown as $index => $item) {
