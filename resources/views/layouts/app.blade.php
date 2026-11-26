@@ -43,7 +43,7 @@
             $businessSchema = [
                 '@context' => 'https://schema.org',
                 '@graph' => [
-                    ['@type' => 'Organization', '@id' => route('home').'#organization', 'name' => $siteSettings['company_name'] ?? 'Home Movers and Cleaners', 'url' => route('home'), 'logo' => asset($siteSettings['primary_logo'] ?? 'images/brand-logo.png'), 'telephone' => $siteSettings['phone'] ?? '07999 48 186', 'sameAs' => array_values($siteSettings->only(['facebook', 'instagram', 'tiktok', 'youtube'])->filter()->all())],
+                    ['@type' => 'Organization', '@id' => route('home').'#organization', 'name' => $siteSettings['company_name'] ?? 'Home Movers and Cleaners', 'url' => route('home'), 'logo' => asset($siteSettings['primary_logo'] ?? 'images/brand-logo-20261126.png'), 'telephone' => $siteSettings['phone'] ?? '07999 48 186', 'sameAs' => array_values($siteSettings->only(['facebook', 'instagram', 'tiktok', 'youtube'])->filter()->all())],
                     ['@type' => 'WebSite', '@id' => route('home').'#website', 'url' => route('home'), 'name' => $siteSettings['company_name'] ?? 'Home Movers and Cleaners', 'publisher' => ['@id' => route('home').'#organization'], 'inLanguage' => 'en-KE'],
                     ['@type' => 'LocalBusiness', '@id' => route('home').'#localbusiness', 'name' => $siteSettings['company_name'] ?? 'Home Movers and Cleaners', 'url' => route('home'), 'telephone' => $siteSettings['phone'] ?? '07999 48 186', 'areaServed' => $siteSettings['business_location'] ?? 'Nairobi, Kenya', 'image' => $socialImage, 'sameAs' => array_values($siteSettings->only(['facebook', 'instagram', 'tiktok', 'youtube'])->filter()->all())],
                 ],
@@ -82,7 +82,7 @@
     <header class="site-header">
         <div class="wrap nav-row">
             <a href="{{ route('home') }}" class="brand" aria-label="{{ $siteSettings['company_name'] ?? 'Home Movers and Cleaners' }} home">
-                <img src="{{ asset($siteSettings['primary_logo'] ?? 'images/brand-logo.png') }}" alt="Home Movers and Cleaners logo">
+                <img src="{{ asset($siteSettings['primary_logo'] ?? 'images/brand-logo-20261126.png') }}" alt="Home Movers and Cleaners logo">
             </a>
 
             <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle site navigation">
@@ -120,7 +120,7 @@
         <div class="wrap footer-grid">
             <div class="footer-brand-column">
                 <a class="footer-brand" href="{{ route('home') }}" aria-label="{{ $siteSettings['company_name'] ?? 'Home Movers and Cleaners' }} home">
-                    <img src="{{ asset($siteSettings['footer_logo'] ?? 'images/brand-logo.png') }}" alt="">
+                    <img src="{{ asset($siteSettings['footer_logo'] ?? 'images/brand-logo-20261126.png') }}" alt="">
                 </a>
                 <p>{{ $siteSettings['footer_description'] ?? 'Professional moving, fumigation, sofa and mattress cleaning, and house deep cleaning for homes and businesses.' }}</p>
                 <div class="footer-socials" aria-label="Social media">

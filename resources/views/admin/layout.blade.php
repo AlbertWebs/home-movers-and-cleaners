@@ -15,7 +15,7 @@
                 ? route('admin.dashboard')
                 : (auth()->user()->role === 'booking_manager' ? route('admin.bookings') : route('admin.homepage'));
         @endphp
-        <a class="admin-brand" href="{{ $adminHomeRoute }}"><img src="{{ asset('images/brand-logo.png') }}" alt=""><span>STUDIO<br><small>WEBSITE MANAGER</small></span></a>
+        <a class="admin-brand" href="{{ $adminHomeRoute }}"><img src="{{ asset('images/brand-logo-20261126.png') }}" alt=""><span>STUDIO<br><small>WEBSITE MANAGER</small></span></a>
         <span class="sidebar-label">WORKSPACE</span>
         @can('manage-settings')<a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i>◫</i> Overview</a>@endcan
         @can('manage-bookings')
