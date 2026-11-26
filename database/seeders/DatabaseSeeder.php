@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'hero_description' => 'From moving to deep cleaning, we provide convenient solutions to help you maintain a clean, comfortable home and enjoy a smoother moving experience.',
             'about_preview' => 'Life moves. Rooms need a reset. Our moving and cleaning services are here to make those moments feel a little lighter.',
             'phone' => '07999 48 186',
-            'whatsapp' => '25479948186',
+            'whatsapp' => '254799948186',
             'booking_recipient' => 'bookings@homemoversandcleaners.co.ke',
             'enquiry_recipient' => 'bookings@homemoversandcleaners.co.ke',
             'notification_cc' => 'albertmuhatia@gmail.com, homemoversandcleaners@gmail.com',
