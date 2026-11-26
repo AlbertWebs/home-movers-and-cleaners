@@ -3564,3 +3564,11 @@ body.about-page .about-intro.about-hero::before { display: none; }
 .footer-inspired .footer-grid > div.footer-column > a:hover,
 .footer-inspired .footer-bottom a:hover,
 .footer-credit a:hover { color: #f4bd26; }
+
+/* The new full wordmark includes its own name and slogan. */
+.site-header .brand img { width: 150px; height: 64px; object-fit: contain; }
+.footer-brand { width: min(100%, 350px); min-height: 0; padding: 12px; }
+.footer-brand > img { width: 100%; height: auto; flex: 0 1 auto; object-fit: contain; }
+@media (max-width: 700px) {
+    .site-header .brand img { width: 118px; height: 60px; }
+}

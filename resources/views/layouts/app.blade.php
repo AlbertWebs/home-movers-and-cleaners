@@ -121,7 +121,6 @@
             <div class="footer-brand-column">
                 <a class="footer-brand" href="{{ route('home') }}" aria-label="{{ $siteSettings['company_name'] ?? 'Home Movers and Cleaners' }} home">
                     <img src="{{ asset($siteSettings['footer_logo'] ?? 'images/brand-logo.png') }}" alt="">
-                    <span><strong>HOME MOVERS</strong><small>AND CLEANERS</small></span>
                 </a>
                 <p>{{ $siteSettings['footer_description'] ?? 'Professional moving, fumigation, sofa and mattress cleaning, and house deep cleaning for homes and businesses.' }}</p>
                 <div class="footer-socials" aria-label="Social media">
